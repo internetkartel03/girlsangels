@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "checkJs": false,
+    "jsx": "react",
+    "allowJs": true,
+    "baseUrl": "."
+  },
+  "include": [
+    "*.js",
+    "*.jsx",
+    "components/**/*.jsx",
+    "components/**/*.js",
+    "portal/**/*.jsx",
+    "portal/**/*.js",
+    "api/**/*.js",
+    "config/**/*.js",
+    "supabase/**/*.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
