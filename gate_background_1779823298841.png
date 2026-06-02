@@ -1,0 +1,1021 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useState } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'motion/react';
+import { Girl } from '../types';
+import { Check, Star, Info, Sparkles, Eye, X, Heart, RotateCcw, Grid, Layers } from 'lucide-react';
+// @ts-ignore
+import gateBg from '../assets/images/gate_background_1779823298841.png';
+
+export const eliteGirls: Girl[] = [
+  {
+    id: 'bella',
+    name: 'Bella',
+    age: 23,
+    height: "5'8\"",
+    hair: 'Seductive VIP Elite',
+    cupSize: '34DD',
+    measurements: '34-24-36',
+    tags: ['Vegas Elite', 'Bestseller', 'VIP Companion'],
+    image: gateBg,
+    bio: 'Voted #1 high-energy VIP dancer for high-rollers. Bella delivers high-end charismatic, hypnotic private dance performances for luxury hotels, villas, and premium events.',
+    rating: 5.0,
+    languages: ['English', 'Spanish'],
+    gallery: [
+      'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400'
+    ]
+  },
+  {
+    id: 'chloe',
+    name: 'Chloe',
+    age: 22,
+    height: "5'6\"",
+    hair: 'Sleek Elegant Muse',
+    cupSize: '34D',
+    measurements: '34-23-35',
+    tags: ['VIP Hostess', 'New Featured', 'Arm Candy'],
+    image: gateBg,
+    bio: 'A high-society Vegas outcall dancer and luxury companion whose sophistication matches her mesmerizing private entertainment style. Ideal for dinner dates or private calls.',
+    rating: 4.9,
+    languages: ['English', 'French'],
+    gallery: [
+      'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400'
+    ]
+  },
+  {
+    id: 'sienna',
+    name: 'Sienna',
+    age: 24,
+    height: "5'7\"",
+    hair: 'Showgirl Classic',
+    cupSize: '36C',
+    measurements: '35-24-36',
+    tags: ['Showgirl Classic', 'Sensual Wave'],
+    image: gateBg,
+    bio: 'An athletic, high-fashion showgirl who blends graceful artistic poses with captivating private outcall dancing. Her magnetic presence instantly commands attention.',
+    rating: 5.0,
+    languages: ['English'],
+    gallery: [
+      'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1512485694743-9c9538b4e6e0?auto=format&fit=crop&q=80&w=400'
+    ]
+  },
+  {
+    id: 'jade',
+    name: 'Jade',
+    age: 23,
+    height: "5'5\"",
+    hair: 'Exotic High Energy',
+    cupSize: '34DD',
+    measurements: '34-24-35',
+    tags: ['Party Favorite', 'High Energetic', 'Exotic Queen'],
+    image: gateBg,
+    bio: 'Captivating, exotic companion who loves hosting premium Vegas bachelor parties, interactive events, and VIP table packages. Energetic and legally compliant.',
+    rating: 4.9,
+    languages: ['English', 'Mandarin'],
+    gallery: [
+      'https://images.unsplash.com/photo-1562572159-4ebcd318f4dd?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1551069613-1904dbdcda11?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1581403341630-a6e0b9d2d257?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1595959183077-5124c96957b0?auto=format&fit=crop&q=80&w=400'
+    ]
+  },
+  {
+    id: 'natalia',
+    name: 'Natalia',
+    age: 22,
+    height: "5'9\"",
+    hair: 'Striking Runway Model',
+    cupSize: '34D',
+    measurements: '34-23-36',
+    tags: ['European Exotic', 'Premium Elite'],
+    image: gateBg,
+    bio: 'A striking international companion who brings high-end runway model aesthetics to your private Vegas suites. Articulate, charming, and extremely alluring.',
+    rating: 5.0,
+    languages: ['Russian', 'English'],
+    gallery: [
+      'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1481214151140-1818e559317f?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=400'
+    ]
+  },
+  {
+    id: 'scarlett',
+    name: 'Scarlett',
+    age: 25,
+    height: "5'7\"",
+    hair: 'Hypnotic Theatrical Star',
+    cupSize: '34DD',
+    measurements: '35-24-34',
+    tags: ['Theatrical Core', 'Discreet Master'],
+    image: gateBg,
+    bio: 'Enigmatic, theatrical performer who excels at customized private dancing, upscale Vegas outcalls, and high-discretion executive accompaniment.',
+    rating: 4.9,
+    languages: ['English', 'German'],
+    gallery: [
+      'https://images.unsplash.com/photo-1481824429379-07aa5e5b0739?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1514316454349-750a7fd3da3a?auto=format&fit=crop&q=80&w=400',
+      'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&q=80&w=400'
+    ]
+  }
+];
+
+export default function GirlsShowcase({ onSelectedGirlsChange, selectedGirlIds }: GirlsShowcaseProps) {
+  const [filter, setFilter] = useState<'ALL' | 'FAVORITES' | 'NEW_ROSTER'>('ALL');
+  const [activeTab, setActiveTab] = useState<'SWIPE' | 'GRID'>('SWIPE');
+  const [currentCardIdx, setCurrentCardIdx] = useState(0);
+  const [detailGirl, setDetailGirl] = useState<Girl | null>(null);
+
+  // Filter girls based on state
+  const filteredGirls = eliteGirls.filter((girl) => {
+    if (filter === 'FAVORITES') {
+      return girl.tags.includes('Vegas Elite') || girl.tags.includes('Bestseller') || girl.tags.includes('Party Favorite');
+    }
+    if (filter === 'NEW_ROSTER') {
+      return girl.tags.includes('New Featured') || girl.tags.includes('VIP Hostess');
+    }
+    return true;
+  });
+
+  const handleFilterChange = (newFilter: 'ALL' | 'FAVORITES' | 'NEW_ROSTER') => {
+    setFilter(newFilter);
+    setCurrentCardIdx(0);
+  };
+
+  const toggleSelection = (id: string) => {
+    if (selectedGirlIds.includes(id)) {
+      onSelectedGirlsChange(selectedGirlIds.filter((gid) => gid !== id));
+    } else {
+      onSelectedGirlsChange([...selectedGirlIds, id]);
+    }
+  };
+
+  const handleSwipe = (girlId: string, direction: 'left' | 'right') => {
+    if (direction === 'right') {
+      // Swipe Right: Book/Select!
+      if (!selectedGirlIds.includes(girlId)) {
+        onSelectedGirlsChange([...selectedGirlIds, girlId]);
+      }
+    } else {
+      // Swipe Left: Skip/Deselect!
+      if (selectedGirlIds.includes(girlId)) {
+        onSelectedGirlsChange(selectedGirlIds.filter((id) => id !== girlId));
+      }
+    }
+    // Proceed index forward
+    setCurrentCardIdx((prev) => prev + 1);
+  };
+
+  return (
+    <div className="w-full">
+      {/* Filters and Layout Toggle Buttons (No blonde or brunettes labels/filters) */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        {/* Roster Filter Slots without hair color classifications */}
+        <div className="flex flex-wrap gap-2.5">
+          {[
+            { id: 'ALL', label: 'All Active Vegas Roster' },
+            { id: 'FAVORITES', label: 'Favorites & VIP Core' },
+            { id: 'NEW_ROSTER', label: 'New Hostesses' },
+          ].map((btn) => (
+            <button
+              type="button"
+              key={btn.id}
+              onClick={() => handleFilterChange(btn.id as any)}
+              className={`px-4 py-2 rounded-full font-mono text-[11px] font-bold tracking-wider uppercase border transition-all cursor-pointer ${
+                filter === btn.id
+                  ? 'bg-accent/20 border-accent/70 text-white shadow-inner shadow-accent/10 glow-pink'
+                  : 'bg-white/5 border-white/5 text-white/50 hover:text-white/80 hover:border-white/10'
+              }`}
+            >
+              {btn.label}
+            </button>
+          ))}
+        </div>
+
+        {/* View Switcher Swipe Deck vs. Grid Directory */}
+        <div className="flex items-center gap-1.5 bg-white/5 p-1 rounded-lg border border-white/5">
+          <button
+            type="button"
+            onClick={() => setActiveTab('SWIPE')}
+            className={`px-3 py-1.5 rounded text-xs font-mono font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'SWIPE' ? 'bg-accent text-white' : 'text-white/40 hover:text-white/70'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5" /> Swipe Deck
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('GRID')}
+            className={`px-3 py-1.5 rounded text-xs font-mono font-bold uppercase transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'GRID' ? 'bg-accent text-white' : 'text-white/40 hover:text-white/70'
+            }`}
+          >
+            <Grid className="w-3.5 h-3.5" /> Grid View
+          </button>
+        </div>
+      </div>
+
+      {/* SWIPE CARD DECK STYLE INTERACTIVE PRESENTATION */}
+      {activeTab === 'SWIPE' ? (
+        <div className="w-full flex flex-col items-center">
+          {filteredGirls.length > 0 ? (
+            currentCardIdx < filteredGirls.length ? (
+              <div className="flex flex-col items-center w-full">
+                
+                {/* Frame container for relative cards stacking */}
+                <div className="relative w-full max-w-[325px] aspect-[1/1.4] mb-6">
+                  {/* Render stacked cards in reverse order so bottom cards render under the top draggable card */}
+                  {filteredGirls.slice(currentCardIdx, currentCardIdx + 3).reverse().map((girl, idx, arr) => {
+                    // Find actual relative index post-reversing to isolate top vs background layers
+                    const realIdxInSlice = arr.length - 1 - idx;
+                    const isTopCard = realIdxInSlice === 0;
+
+                    // Stack layout scaling details
+                    const scale = 1 - realIdxInSlice * 0.04;
+                    const yOffset = realIdxInSlice * 12;
+                    const opacity = 1 - realIdxInSlice * 0.35;
+                    const zIndex = 30 - realIdxInSlice;
+
+                    if (isTopCard) {
+                      return (
+                        <SwiperDeckCard
+                          key={girl.id}
+                          girl={girl}
+                          onSwipe={(dir) => handleSwipe(girl.id, dir)}
+                          onSelect={() => toggleSelection(girl.id)}
+                          isSelected={selectedGirlIds.includes(girl.id)}
+                          onShowDetails={() => setDetailGirl(girl)}
+                        />
+                      );
+                    }
+
+                    // Bottom Layer Card placeholder
+                    return (
+                      <motion.div
+                        key={girl.id}
+                        initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                        animate={{ scale, y: yOffset, opacity }}
+                        transition={{ duration: 0.3 }}
+                        className="absolute inset-0 w-full h-full bg-[#0a0a0f] border border-white/5 rounded-2xl overflow-hidden p-4 pointer-events-none flex flex-col justify-between"
+                        style={{ zIndex }}
+                      >
+                        <div className="relative w-full aspect-[4/5] overflow-hidden rounded-xl bg-zinc-950/40">
+                          <img
+                            src={girl.image}
+                            alt=""
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover opacity-35 select-none blur-[1px]"
+                          />
+                        </div>
+                        <div className="flex-1 flex flex-col justify-between pt-3 opacity-30">
+                          <div className="flex justify-between items-baseline mb-1">
+                            <h3 className="font-display text-lg font-black text-white/55">{girl.name}</h3>
+                            <span className="font-mono text-xs text-white/30">{girl.cupSize}</span>
+                          </div>
+                          <div className="grid grid-cols-3 gap-1 py-1 px-2 bg-white/[0.01] border border-white/5 rounded-lg text-center" />
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Swipe Action Control Trigger Buttons */}
+                <div className="flex items-center gap-4 justify-center mb-6">
+                  {/* Skip Left Trigger */}
+                  <button
+                    type="button"
+                    onClick={() => handleSwipe(filteredGirls[currentCardIdx].id, 'left')}
+                    className="w-12 h-12 rounded-full border border-white/10 hover:border-white/20 hover:bg-white/5 flex items-center justify-center text-white/60 hover:text-white transition-all shadow-md cursor-pointer shrink-0"
+                    title="Pass / Skip Angel (Swipe Left)"
+                  >
+                    <X className="w-5 h-5 text-white/40" />
+                  </button>
+                  
+                  {/* Quick Select Checkbox Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => toggleSelection(filteredGirls[currentCardIdx].id)}
+                    className={`px-5 py-2.5 rounded-xl font-mono text-[10px] font-black uppercase tracking-wider border transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                      selectedGirlIds.includes(filteredGirls[currentCardIdx].id)
+                        ? 'bg-[#FF2E88]/15 border-[#FF2E88]/40 text-white glow-pink'
+                        : 'bg-white/5 border-white/10 text-white hover:border-[#FF2E88]/20 hover:bg-[#FF2E88]/5'
+                    }`}
+                  >
+                    <Check className={`w-3.5 h-3.5 ${selectedGirlIds.includes(filteredGirls[currentCardIdx].id) ? 'text-[#FF2E88]' : 'text-white/40'}`} />
+                    {selectedGirlIds.includes(filteredGirls[currentCardIdx].id) ? 'Selected' : 'Add to Lineup'}
+                  </button>
+
+                  {/* Book Right Trigger */}
+                  <button
+                    type="button"
+                    onClick={() => handleSwipe(filteredGirls[currentCardIdx].id, 'right')}
+                    className="w-12 h-12 rounded-full bg-[#FF2E88]/10 hover:bg-[#FF2E88]/25 border border-[#FF2E88]/30 hover:border-[#FF2E88]/60 flex items-center justify-center text-white transition-all glow-pink-sm cursor-pointer shrink-0"
+                    title="Book / Swipe Right (Swipe Right)"
+                  >
+                    <Heart className="w-5 h-5 fill-current text-[#FF2E88]" />
+                  </button>
+                </div>
+
+                {/* Status Ticker Helper & Deck Index Info */}
+                <div className="font-mono text-[9px] text-white/40 tracking-wider flex items-center gap-2 mb-4 pointer-events-none">
+                  <span className="w-1 h-1 rounded-full bg-accent animate-ping" />
+                  <span>SPOTLIGHT SWIPER CONSOLE</span>
+                  <span className="text-white/20">//</span>
+                  <span className="text-accent font-black">ANGEL {currentCardIdx + 1} OF {filteredGirls.length}</span>
+                </div>
+
+                {/* Selection helper mini checklist display below the Swipe Card */}
+                <BookingMiniChecklist selectedGirlIds={selectedGirlIds} girls={eliteGirls} onRemove={toggleSelection} />
+
+              </div>
+            ) : (
+              /* End of Deck state */
+              <div className="flex flex-col items-center justify-center py-12 px-6 max-w-sm mx-auto bg-white/[0.02] border border-white/5 rounded-2xl text-center backdrop-blur-md shadow-2xl">
+                <Sparkles className="w-8 h-8 text-[#0ad6ff] mb-3 animate-pulse" />
+                <h4 className="font-display font-black text-white text-base uppercase tracking-wider mb-1">
+                  Active Deck Completed
+                </h4>
+                <p className="text-[11px] text-white/40 font-light leading-relaxed mb-6">
+                  You've browsed through all active on-duty Vegas performers. You can rewind and review or inspect your active booking lineup.
+                </p>
+
+                {/* Lineup summary within End-of-Deck */}
+                <div className="w-full text-left space-y-2 mb-6">
+                  <span className="font-mono text-[8px] text-white/30 uppercase tracking-widest block font-bold">
+                    Current Selection Lineup ({selectedGirlIds.length})
+                  </span>
+                  {selectedGirlIds.length > 0 ? (
+                    <div className="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
+                      {selectedGirlIds.map((id) => {
+                        const g = eliteGirls.find((x) => x.id === id);
+                        if (!g) return null;
+                        return (
+                          <div key={id} className="flex justify-between items-center bg-black/45 border border-white/5 rounded-lg p-2 gap-2">
+                            <div className="flex items-center gap-2 truncate">
+                              <div className="w-6 h-6 rounded bg-zinc-800 overflow-hidden shrink-0">
+                                <img src={g.image} alt="" className="w-full h-full object-cover opacity-80" />
+                              </div>
+                              <span className="text-[10px] text-white font-bold truncate">{g.name}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => toggleSelection(id)}
+                              className="text-[9px] font-mono text-[#FF2E88] hover:underline cursor-pointer shrink-0"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="bg-black/20 text-center py-3.5 border border-dashed border-white/5 rounded-lg">
+                      <span className="font-mono text-[9px] text-white/30">No selected performers yet</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-col w-full gap-2 font-mono text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentCardIdx(0)}
+                    className="w-full py-2.5 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 font-bold uppercase tracking-wider text-white transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" /> Rewind and Swipe Again
+                  </button>
+                  
+                  {selectedGirlIds.length > 0 && (
+                    <div className="text-[9px] text-[#0ad6ff] animate-pulse mt-2 font-bold uppercase tracking-wide">
+                      ⚜️ Scroll down to complete Step 2 location details!
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+          ) : (
+            <span className="text-white/40 font-mono text-xs py-8">No angels matched this selection filter.</span>
+          )}
+        </div>
+      ) : (
+        /* GRID DIRECTORY LISTING PRESENTATION (No hair color labels) */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredGirls.map((girl) => {
+            const isSelected = selectedGirlIds.includes(girl.id);
+            return (
+              <GridGirlCard
+                key={girl.id}
+                girl={girl}
+                isSelected={isSelected}
+                onToggleSelection={() => toggleSelection(girl.id)}
+                onShowDetails={() => { setDetailGirl(girl); }}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {/* Roster Detailed Profile Modal */}
+      <AnimatePresence>
+        {detailGirl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setDetailGirl(null)}
+              className="absolute inset-0 bg-black/90 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative w-full max-w-lg bg-[#0c0c11] border border-white/10 shadow-2xl rounded-2xl overflow-hidden p-6 md:p-8 z-10"
+            >
+              {/* Cover layout */}
+              <div className="flex justify-between items-center pb-4 border-b border-white/5 mb-6">
+                <span className="font-mono text-xs tracking-widest text-[#FF2E88] font-bold uppercase">
+                  [Vegas Audited Companion Profile]
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setDetailGirl(null)}
+                  className="text-white/40 hover:text-white py-1 px-2 border border-white/10 rounded font-mono text-[10px] cursor-pointer"
+                >
+                  ESC // CLOSE
+                </button>
+              </div>
+
+              {/* Portrait Grid alignment */}
+              <div className="flex flex-col sm:flex-row gap-6 mb-6">
+                <div className="w-1/2 xs:w-1/3 aspect-[3/4] rounded-xl overflow-hidden bg-zinc-900 border border-white/5 shrink-0">
+                  <img
+                    src={detailGirl.image}
+                    alt={detailGirl.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-baseline justify-between mb-1">
+                      <h4 className="font-display text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        {detailGirl.name}
+                        <span className="text-sm text-white/40 font-mono">({detailGirl.age})</span>
+                      </h4>
+                    </div>
+                    <span className="font-mono text-xs text-accent uppercase font-bold tracking-wider mb-2 block">
+                      {detailGirl.hair} // {detailGirl.cupSize}
+                    </span>
+                    <p className="text-white/60 text-xs font-light leading-relaxed">
+                      {detailGirl.bio}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-1.5">
+                    {detailGirl.tags.map((tag) => (
+                      <span key={tag} className="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-[9px] font-mono text-[#0ad6ff] uppercase">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Detailed specification table */}
+              <div className="bg-white/5 rounded-xl border border-white/5 p-4 mb-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="block text-[9px] text-white/30 font-mono uppercase">Height Profile</span>
+                    <span className="text-xs font-bold text-white mb-2 block">{detailGirl.height}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[9px] text-white/30 font-mono uppercase">Official Measurements</span>
+                    <span className="text-xs font-bold text-white mb-2 block">{detailGirl.measurements}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[9px] text-white/30 font-mono uppercase">Cup / bust Size</span>
+                    <span className="text-xs font-bold text-white mb-2 block">{detailGirl.cupSize}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[9px] text-white/30 font-mono uppercase">Style Specialty</span>
+                    <span className="text-xs font-bold text-accent mb-2 block truncate">{detailGirl.hair}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Toggle selection bar */}
+              <div className="flex gap-3 font-mono">
+                <button
+                  type="button"
+                  onClick={() => setDetailGirl(null)}
+                  className="flex-1 py-3 bg-white/5 rounded-lg border border-white/5 text-xs hover:bg-white/10 hover:text-white text-white/60 transition-all cursor-pointer"
+                >
+                  Back to Showcase
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    toggleSelection(detailGirl.id);
+                    setDetailGirl(null);
+                  }}
+                  className={`flex-1 py-3 text-xs font-bold uppercase rounded-lg border tracking-wider transition-all cursor-pointer ${
+                    selectedGirlIds.includes(detailGirl.id)
+                      ? 'bg-[#FF2E88]/10 border-accent/40 text-white shadow-inner animate-pulse'
+                      : 'bg-accent border-accent text-white hover:bg-accent-hover'
+                  }`}
+                >
+                  {selectedGirlIds.includes(detailGirl.id) ? '✓ Selected' : 'Select ' + detailGirl.name}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Tinder-style interactive draggable card sub-component
+function SwiperDeckCard({
+  girl,
+  onSwipe,
+  onSelect,
+  isSelected,
+  onShowDetails
+}: {
+  key?: string;
+  girl: Girl;
+  onSwipe: (dir: 'left' | 'right') => void;
+  onSelect: () => void;
+  isSelected: boolean;
+  onShowDetails: () => void;
+}) {
+  const x = useMotionValue(0);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
+
+  const activeImage = selectedGalleryImg || girl.image;
+  
+  // Convert drag coordinate 'x' to rotation degrees for a realistic swing/swipe feel
+  const rotate = useTransform(x, [-200, 200], [-15, 15]);
+  
+  // Connect gesture magnitude dynamically to glow pass/book overlays
+  const bookOpacity = useTransform(x, [0, 100], [0, 1]);
+  const passOpacity = useTransform(x, [-100, 0], [1, 0]);
+
+  const handleDragEnd = (_e: any, info: any) => {
+    if (isExpanded) return; // Ignore drag triggers when expanded
+    const swipeThreshold = 100;
+    if (info.offset.x > swipeThreshold) {
+      onSwipe('right');
+    } else if (info.offset.x < -swipeThreshold) {
+      onSwipe('left');
+    }
+  };
+
+  return (
+    <motion.div
+      drag={isExpanded ? false : "x"}
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.65}
+      style={{ x: isExpanded ? 0 : x, rotate: isExpanded ? 0 : rotate }}
+      onDragEnd={handleDragEnd}
+      whileDrag={isExpanded ? {} : { scale: 1.04, cursor: 'grabbing' }}
+      animate={{ x: 0, rotate: 0 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+      className={`absolute inset-0 w-full h-full bg-[#0a0a0f] border border-white/10 rounded-2xl overflow-hidden shadow-[0_15px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between p-4 z-30 transition-all ${
+        isExpanded ? 'overflow-y-auto scrollbar-thin cursor-default' : 'cursor-grab touch-none select-none'
+      }`}
+    >
+      {/* Visual Overlay cues during dragging */}
+      {!isExpanded && (
+        <>
+          <motion.div 
+            style={{ opacity: bookOpacity }} 
+            className="absolute inset-0 bg-[#FF2E88]/20 border-2 border-[#FF2E88] rounded-2xl flex items-center justify-center pointer-events-none z-45"
+          >
+            <span className="bg-[#FF2E88] text-white font-mono text-[9px] font-black tracking-widest px-4 py-2 rounded-lg rotate-12 uppercase border border-white/20 shadow-xl">
+              BOOK THIS ANGEL ♡
+            </span>
+          </motion.div>
+
+          <motion.div 
+            style={{ opacity: passOpacity }} 
+            className="absolute inset-0 bg-white/5 border-2 border-white/20 rounded-2xl flex items-center justify-center pointer-events-none z-45"
+          >
+            <span className="bg-zinc-800 text-white/90 font-mono text-[9px] font-black tracking-widest px-4 py-2 rounded-lg -rotate-12 uppercase border border-white/10 shadow-xl">
+              SKIP FOR NOW ✕
+            </span>
+          </motion.div>
+        </>
+      )}
+
+      {/* Portrait block */}
+      <div 
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
+        className="relative w-full aspect-[4/5] overflow-hidden rounded-xl bg-zinc-950 shrink-0 cursor-pointer"
+      >
+        <img
+          src={activeImage}
+          alt={girl.name}
+          referrerPolicy="no-referrer"
+          className="w-full h-full object-cover opacity-85 pointer-events-none select-none transition-all duration-300"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-black/35 pointer-events-none" />
+        
+        {/* Rating Floating Badge */}
+        <div className="absolute top-3 right-3 bg-black/75 backdrop-blur-md border border-white/10 rounded-full px-2 py-0.5 flex items-center gap-1 z-10 pointer-events-none">
+          <Star className="w-3 h-3 fill-[#FFC72C] text-[#FFC72C]" />
+          <span className="font-mono text-[9px] font-black text-white">{girl.rating.toFixed(1)}</span>
+        </div>
+
+        {/* Selected Overlay Indicator */}
+        {isSelected && (
+          <div className="absolute inset-0 bg-accent/20 flex items-center justify-center z-10 border-2 border-accent rounded-xl pointer-events-none">
+            <div className="bg-accent text-white font-mono text-[9px] font-black tracking-wider px-3 py-1.5 rounded-lg flex items-center gap-1 shadow-2xl scale-110">
+              <Check className="w-3.5 h-3.5" /> LINEUP ADDED
+            </div>
+          </div>
+        )}
+
+        <div className="absolute bottom-3 left-3 flex flex-wrap gap-1 z-10 pointer-events-none">
+          {girl.tags.slice(0, 2).map((tag) => (
+            <span key={tag} className="px-2 py-0.5 text-[7px] tracking-wider uppercase font-black bg-accent/90 text-white rounded font-mono">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Info Blocks */}
+      <div className="flex-1 flex flex-col justify-between pt-3">
+        <div>
+          <div 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+            className="flex justify-between items-baseline mb-1 cursor-pointer hover:text-accent transition-colors"
+          >
+            <h3 className="font-display text-xl font-black text-white">
+              {girl.name} <span className="text-xs text-white/40 font-mono">[{girl.age}]</span>
+            </h3>
+            <span className="font-mono text-xs text-accent font-black">{girl.cupSize}</span>
+          </div>
+
+          <div 
+            className={`text-[10px] text-white/50 leading-relaxed font-sans font-light mb-2 transition-all ${
+              isExpanded ? 'text-white/80' : 'line-clamp-2'
+            }`}
+          >
+            {girl.bio}
+          </div>
+        </div>
+
+        {/* Specs Table */}
+        <div 
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsExpanded(!isExpanded);
+          }}
+          className="grid grid-cols-3 gap-1 py-1 px-2 bg-white/[0.03] border border-white/5 rounded-lg text-center mb-3 cursor-pointer"
+        >
+          <div>
+            <span className="block text-[7px] text-white/30 font-mono uppercase">Height</span>
+            <span className="text-[9px] font-extrabold text-white">{girl.height}</span>
+          </div>
+          <div>
+            <span className="block text-[7px] text-white/30 font-mono uppercase">Specs</span>
+            <span className="text-[9px] font-extrabold text-white/80 font-mono">{girl.measurements}</span>
+          </div>
+          <div>
+            <span className="block text-[7px] text-white/30 font-mono uppercase">Style Vibe</span>
+            <span className="text-[9px] font-extrabold text-accent truncate block max-w-full">{girl.hair}</span>
+          </div>
+        </div>
+
+        {/* Languages when expanded inside swiper card */}
+        {isExpanded && (
+          <div className="flex gap-2 items-center justify-start py-1.5 border-b border-white/5 mb-3 select-none">
+            <span className="text-[7px] text-white/40 font-mono uppercase block font-semibold">Languages:</span>
+            <div className="flex flex-wrap gap-1">
+              {girl.languages.map((lang) => (
+                <span key={lang} className="text-[7px] font-mono px-1 py-0.5 rounded bg-white/5 text-white/60 font-semibold uppercase">
+                  {lang}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Interactive gallery when expanded inside swiper card */}
+        {isExpanded && girl.gallery && (
+          <div className="mt-2 mb-3 select-none" onPointerDown={(e) => e.stopPropagation()}>
+            <span className="font-mono text-[7px] uppercase tracking-wider text-accent mb-1.5 font-black block">
+              ⚜️ PHOTOS (CLICK TO VIEW)
+            </span>
+            <div className="grid grid-cols-4 gap-1.5">
+              {girl.gallery.map((imgUrl, imgIdx) => (
+                <div 
+                  key={imgIdx} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedGalleryImg(imgUrl);
+                  }}
+                  className={`aspect-[3/4] rounded-lg overflow-hidden border bg-zinc-950 transition-all duration-300 relative group/swiper-thumb cursor-pointer ${
+                    activeImage === imgUrl ? 'border-accent ring-1 ring-accent/30 scale-102' : 'border-white/5 hover:border-accent/40'
+                  }`}
+                >
+                  <img
+                    src={imgUrl}
+                    alt={`${girl.name} gallery ${imgIdx + 1}`}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Action Panel */}
+        <div className="flex gap-2 mt-1">
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+            className="flex-1 py-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 text-[10px] uppercase font-mono tracking-wider font-extrabold text-white/80 transition-all flex items-center justify-center gap-1 cursor-pointer"
+          >
+            <Eye className="w-3.5 h-3.5 text-[#0ad6ff]" /> {isExpanded ? 'Collapse' : 'Photos & Specs'}
+          </button>
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); onSelect(); }}
+            className={`flex-1 py-2 rounded-lg text-[10px] uppercase font-mono tracking-wider font-black transition-all flex items-center justify-center gap-1 cursor-pointer ${
+              isSelected 
+                ? 'bg-[#FF2E88]/15 border border-[#FF2E88]/40 text-white shadow-inner' 
+                : 'bg-accent text-white hover:bg-opacity-90 shadow-md'
+            }`}
+          >
+            {isSelected ? <Check className="w-3.5 h-3.5" /> : null}
+            {isSelected ? 'Selected' : 'Select'}
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// Grid view card with expand on click support, gallery, bio, and specs details
+function GridGirlCard({
+  girl,
+  isSelected,
+  onToggleSelection,
+  onShowDetails
+}: {
+  key?: any;
+  girl: Girl;
+  isSelected: boolean;
+  onToggleSelection: () => void;
+  onShowDetails: () => void;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string | null>(null);
+
+  const activeImage = selectedGalleryImg || girl.image;
+
+  return (
+    <motion.div
+      layout
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+      className={`group relative rounded-2xl overflow-hidden glass-panel border transition-all duration-300 flex flex-col justify-between p-4 ${
+        isSelected ? 'border-accent border-glow-pink' : 'border-white/5 hover:border-white/15'
+      } ${isExpanded ? 'bg-[#0f0f16]/90 shadow-2xl scale-[1.01]' : ''}`}
+    >
+      {/* Overlay tags */}
+      <div className="absolute top-6 left-6 z-20 flex gap-2 pointer-events-none">
+        {girl.tags.slice(0, 1).map((tag) => (
+          <span
+            key={tag}
+            className="px-2.5 py-1 text-[8px] tracking-wider uppercase font-extrabold rounded bg-[#FF2E88]/90 text-white shadow-md font-mono"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Rating score badge on top-right */}
+      <div className="absolute top-6 right-6 z-20 bg-black/70 backdrop-blur-md border border-white/10 rounded-full px-2.5 py-1 flex items-center gap-1 pointer-events-none">
+        <Star className="w-3.5 h-3.5 fill-[#FFC72C] text-[#FFC72C]" />
+        <span className="font-mono text-[10px] font-bold text-white">{girl.rating.toFixed(1)}</span>
+      </div>
+
+      {/* Vertical image portrait container */}
+      <div
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full aspect-[3/4] overflow-hidden rounded-xl bg-zinc-900 relative cursor-pointer"
+      >
+        <img
+          src={activeImage}
+          alt={`${girl.name} - Las Vegas Outcall Companion`}
+          referrerPolicy="no-referrer"
+          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07070A] via-transparent to-transparent opacity-90" />
+        
+        {/* Subtle info icon prompt */}
+        <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md rounded-full p-2 border border-white/5 group-hover:bg-[#FF2E88]/10 group-hover:border-[#FF2E88]/30 transition-all">
+          <Info className="w-4 h-4 text-white/70" />
+        </div>
+      </div>
+
+      {/* Girl specs summary */}
+      <div className="mt-4 flex-1">
+        <div className="flex justify-between items-baseline mb-2">
+          <h3 className="font-display text-2xl font-black text-white hover:text-accent transition-colors flex items-center gap-2">
+            {girl.name}
+            <span className="text-xs text-white/40 font-mono">[{girl.age}]</span>
+          </h3>
+          <span className="font-mono text-xs text-accent text-right">
+            {girl.cupSize}
+          </span>
+        </div>
+
+        {/* Body stats readout line (Hair changed to Style Vibe) */}
+        <div className="grid grid-cols-3 gap-2 py-2 border-y border-white/5 my-3 text-center">
+          <div>
+            <span className="block text-[8px] text-white/30 font-mono uppercase">Height</span>
+            <span className="text-[11px] font-bold text-white">{girl.height}</span>
+          </div>
+          <div>
+            <span className="block text-[8px] text-white/30 font-mono uppercase">Specs</span>
+            <span className="text-[11px] font-bold text-white/80 font-mono">{girl.measurements}</span>
+          </div>
+          <div>
+            <span className="block text-[8px] text-white/30 font-mono uppercase">Style Vibe</span>
+            <span className="text-[11px] font-bold text-accent truncate max-w-full block">{girl.hair}</span>
+          </div>
+        </div>
+
+        {/* Bio text */}
+        <p className={`text-xs text-white/50 leading-relaxed font-light font-sans mb-3 transition-all ${isExpanded ? '' : 'line-clamp-2'}`}>
+          {girl.bio}
+        </p>
+
+        {/* Languages and details when expanded */}
+        {isExpanded && (
+          <div className="flex gap-2 items-center justify-start py-2 border-b border-white/5 mb-3">
+            <span className="text-[8px] text-white/40 font-mono uppercase block">Languages:</span>
+            <div className="flex flex-wrap gap-1">
+              {girl.languages.map((lang) => (
+                <span key={lang} className="text-[8px] font-mono px-1.5 py-0.5 rounded bg-white/5 text-white/60 font-semibold uppercase">
+                  {lang}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Expanded Photo Gallery (4 Photos) */}
+        {isExpanded && girl.gallery && (
+          <div className="mt-4 mb-4">
+            <h4 className="font-mono text-[9px] uppercase tracking-wider text-accent mb-2.5 font-bold flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" /> CLICK GALLERIES TO REPLACE PORTRAIT
+            </h4>
+            <div className="grid grid-cols-4 gap-2">
+              {girl.gallery.map((imgUrl, imgIdx) => (
+                <div 
+                  key={imgIdx} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedGalleryImg(imgUrl);
+                  }}
+                  className={`aspect-[3/4] rounded-lg overflow-hidden border bg-zinc-950 transition-all duration-300 relative group/thumb cursor-pointer ${
+                    activeImage === imgUrl ? 'border-accent ring-1 ring-accent/30 scale-102' : 'border-white/5 hover:border-accent/40'
+                  }`}
+                >
+                  <img
+                    src={imgUrl}
+                    alt={`${girl.name} gallery ${imgIdx + 1}`}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform group-hover/thumb:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Grid Card Trigger Button Row */}
+      <div className="flex gap-2 mt-4">
+        <button
+          type="button"
+          onClick={() => {
+            setIsExpanded(!isExpanded);
+          }}
+          className={`px-3.5 py-3 border rounded-lg text-xs font-mono font-bold uppercase transition-all flex items-center justify-center cursor-pointer flex-1 ${
+            isExpanded
+              ? 'bg-white/10 text-white border-white/10'
+              : 'border-white/5 hover:border-white/10 text-white bg-white/5 hover:bg-white/10'
+          }`}
+        >
+          <Eye className="w-4 h-4 mr-1.5 text-[#0ad6ff]" /> {isExpanded ? 'Collapse' : 'Photos & Bio'}
+        </button>
+        <button
+          type="button"
+          onClick={onToggleSelection}
+          className={`py-3 px-5 rounded-lg text-xs font-mono font-black uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer flex-[2] ${
+            isSelected
+              ? 'bg-accent text-white shadow-lg shadow-accent/20 glow-pink border border-accent/40'
+              : 'bg-white/10 text-white/90 hover:bg-[#FF2E88]/15 hover:text-white border border-white/5 hover:border-accent/10 col-span-2'
+          }`}
+        >
+          {isSelected ? <Check className="w-4 h-4 text-white" /> : null}
+          {isSelected ? 'Angel Added' : 'Book Angel'}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
+// Mini checklist for current approved roster selections
+function BookingMiniChecklist({ 
+  selectedGirlIds, 
+  girls, 
+  onRemove 
+}: { 
+  selectedGirlIds: string[]; 
+  girls: Girl[]; 
+  onRemove: (id: string) => void; 
+}) {
+  if (selectedGirlIds.length === 0) return null;
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="w-full max-w-[325px] border border-white/5 bg-black/40 backdrop-blur-sm rounded-xl p-3"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="font-mono text-[8px] text-white/40 uppercase tracking-widest font-black">
+          Lineup Approved ({selectedGirlIds.length})
+        </span>
+        <span className="bg-[#FF2E88]/10 text-[#FF2E88] text-[8px] font-mono px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">
+          Standby Dispatch
+        </span>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        {selectedGirlIds.map((id) => {
+          const girl = girls.find((g) => g.id === id);
+          if (!girl) return null;
+          return (
+            <div 
+              key={id} 
+              className="flex items-center gap-1 bg-[#FF2E88]/5 border border-[#FF2E88]/15 hover:border-[#FF2E88]/35 rounded-lg pl-1.5 pr-2 py-1 text-[9px] text-white transition-all"
+            >
+              <div className="w-4 h-4 rounded-full overflow-hidden bg-zinc-800 shrink-0">
+                <img src={girl.image} alt="" className="w-full h-full object-cover" />
+              </div>
+              <span className="font-bold">{girl.name}</span>
+              <button
+                type="button"
+                onClick={() => onRemove(id)}
+                className="hover:text-red-400 font-bold transition-colors ml-1 cursor-pointer font-mono"
+                title="Remove Angel"
+              >
+                ✕
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+interface GirlsShowcaseProps {
+  onSelectedGirlsChange: (selectedIds: string[]) => void;
+  selectedGirlIds: string[];
+}

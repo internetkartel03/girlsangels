@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Angel Girls — Dispatch Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#07070A;color:#fff;font-family:'Inter',sans-serif;overflow:hidden;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,46,136,0.3);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:#FF2E88;}
+::selection{background:#FF2E88;color:#fff;}
+input,select,textarea{font-family:'Inter',sans-serif;}
+
+.status-available  {color:#39ff14;} .dot-available  {background:#39ff14;box-shadow:0 0 8px #39ff14;}
+.status-dispatched {color:#00D4FF;} .dot-dispatched {background:#00D4FF;box-shadow:0 0 8px #00D4FF;}
+.status-on-site    {color:#FF2E88;} .dot-on-site    {background:#FF2E88;box-shadow:0 0 8px #FF2E88;}
+.status-off-duty   {color:rgba(255,255,255,0.3);} .dot-off-duty{background:rgba(255,255,255,0.2);}
+
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.45;}}
+@keyframes dash{to{stroke-dashoffset:-20;}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 4px currentColor);}50%{filter:drop-shadow(0 0 12px currentColor);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+.pulse{animation:pulse 2s ease-in-out infinite;}
+.slide-up{animation:slideUp .3s ease both;}
+.glow-anim{animation:glow 2s ease-in-out infinite;}
+
+.glass{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);backdrop-filter:blur(12px);}
+.glass-pink{background:rgba(255,46,136,0.06);border:1px solid rgba(255,46,136,0.2);}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* Map route animation */
+.dispatch-route{stroke-dasharray:6 4;animation:dash 1s linear infinite;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ─── CONSTANTS ─── */
+const ACCENT = '#FF2E88';
+const CYAN   = '#00D4FF';
+const GREEN  = '#39FF14';
+const GOLD   = '#FFC72C';
+const PURPLE = '#9d4edd';
+const ORANGE = '#ff9f1c';
+
+const HOTELS = [
+  { id:'downtown',    name:'Circa / Fremont',      zone:'downtown',      x:268, y:55,  color:GREEN,  eta_base:30 },
+  { id:'fontaine',    name:'Fontainebleau',          zone:'north-strip',   x:268, y:120, color:CYAN,   eta_base:20 },
+  { id:'wynn',        name:'Wynn / Encore',           zone:'north-strip',   x:268, y:175, color:CYAN,   eta_base:18 },
+  { id:'venetian',    name:'Venetian / Palazzo',      zone:'mid-strip',     x:268, y:245, color:ACCENT, eta_base:15 },
+  { id:'caesars',     name:'Caesars Palace',           zone:'mid-strip',     x:268, y:285, color:ACCENT, eta_base:15 },
+  { id:'bellagio',    name:'Bellagio',                 zone:'mid-strip',     x:268, y:320, color:ACCENT, eta_base:15 },
+  { id:'cosmo',       name:'Cosmopolitan',             zone:'mid-strip',     x:268, y:355, color:ACCENT, eta_base:15 },
+  { id:'aria',        name:'Aria / Vdara',             zone:'mid-strip',     x:268, y:385, color:ACCENT, eta_base:15 },
+  { id:'mgm',         name:'MGM Grand',                zone:'south-strip',   x:268, y:455, color:PURPLE, eta_base:22 },
+  { id:'mandalay',    name:'Mandalay Bay',             zone:'south-strip',   x:268, y:520, color:PURPLE, eta_base:25 },
+  { id:'luxor',       name:'Luxor / Excalibur',        zone:'south-strip',   x:268, y:570, color:PURPLE, eta_base:28 },
+  { id:'palms',       name:'Palms / Rio',              zone:'off-strip-w',   x:110, y:355, color:ORANGE, eta_base:35 },
+  { id:'virgin',      name:'Virgin Hotels',            zone:'off-strip-e',   x:440, y:385, color:'#f72585', eta_base:38 },
+];
+
+const SVC_RATES = {
+  nude:    { name:'Full Nude Dancing', rate:750 },
+  topless: { name:'Topless Dancing',   rate:600 },
+  pool:    { name:'Pool Party',        rate:500 },
+  candy:   { name:'Arm Candy',         rate:500 },
+};
+
+const ZONE_SURCHARGE = { 'downtown':0, 'north-strip':0, 'mid-strip':0, 'south-strip':0, 'off-strip-w':50, 'off-strip-e':50 };
+
+/* ─── MOCK ANGELS ─── */
+const INIT_ANGELS = [
+  { id:1, name:'Crystal', status:'available',   x:268, y:320, zone:'mid-strip',   isVIP:true  },
+  { id:2, name:'Jade',    status:'dispatched',  x:268, y:210, zone:'north-strip', isFeat:true, dispatchTo:'wynn',     eta:9  },
+  { id:3, name:'Luna',    status:'on-site',     x:268, y:455, zone:'south-strip', isVIP:true,  dispatchTo:'mgm',      eta:0  },
+  { id:4, name:'Sienna',  status:'available',   x:110, y:355, zone:'off-strip-w', isFeat:true },
+  { id:5, name:'Bella',   status:'available',   x:268, y:55,  zone:'downtown'  },
+  { id:6, name:'Amber',   status:'off-duty',    x:440, y:385, zone:'off-strip-e' },
+];
+
+const INIT_DISPATCHES = [
+  { id:'D-001', angelName:'Jade',  hotel:'Wynn / Encore',  client:'VIP-447', svc:'Full Nude',  hrs:2, total:1500, deposit:150, eta:9,  status:'en-route', time:'10:45 PM' },
+  { id:'D-002', angelName:'Luna',  hotel:'MGM Grand',      client:'VIP-219', svc:'Topless',    hrs:3, total:1800, deposit:150, eta:0,  status:'on-site',  time:'9:30 PM'  },
+];
+
+/* ─── HELPERS ─── */
+function Clock() {
+  const [t, setT] = useState('');
+  useEffect(() => {
+    const fmt = () => setT(new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true }));
+    fmt();
+    const i = setInterval(fmt, 1000);
+    return () => clearInterval(i);
+  }, []);
+  return <span className="mono" style={{ fontSize:13, color:'rgba(255,255,255,0.6)', letterSpacing:'0.1em' }}>{t}</span>;
+}
+
+function StatusDot({ status, size=8 }) {
+  return <span className={`dot-${status} pulse`} style={{ display:'inline-block', width:size, height:size, borderRadius:'50%', flexShrink:0 }} />;
+}
+
+function Badge({ children, color=ACCENT }) {
+  return <span style={{ fontSize:9, fontWeight:800, textTransform:'uppercase', letterSpacing:'0.14em', background:`${color}22`, border:`1px solid ${color}55`, color, borderRadius:999, padding:'2px 8px', flexShrink:0 }}>{children}</span>;
+}
+
+function Stat({ label, value, color='white', sub }) {
+  return (
+    <div style={{ textAlign:'center' }}>
+      <div style={{ fontFamily:"'Syne',sans-serif", fontSize:22, fontWeight:800, color, lineHeight:1 }}>{value}</div>
+      {sub && <div className="mono" style={{ fontSize:9, color:ACCENT, letterSpacing:'0.1em', marginTop:2 }}>{sub}</div>}
+      <div style={{ fontSize:10, color:'rgba(255,255,255,0.35)', textTransform:'uppercase', letterSpacing:'0.18em', marginTop:4 }}>{label}</div>
+    </div>
+  );
+}
+
+/* ─── SVG MAP ─── */
+function VegasMap({ angels, dispatches, selectedHotel, onSelectHotel }) {
+  const W = 560, H = 680;
+
+  const getHotel = id => HOTELS.find(h => h.id === id);
+
+  return (
+    <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} style={{ display:'block', userSelect:'none' }}>
+      <defs>
+        {/* Dot grid */}
+        <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+          <circle cx="14" cy="14" r="0.7" fill="rgba(255,255,255,0.08)" />
+        </pattern>
+        {/* Glows */}
+        <filter id="glow-pink"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="glow-cyan"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="glow-soft"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        {/* Strip gradient */}
+        <linearGradient id="strip-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={GREEN} />
+          <stop offset="25%" stopColor={CYAN} />
+          <stop offset="60%" stopColor={ACCENT} />
+          <stop offset="100%" stopColor={PURPLE} />
+        </linearGradient>
+      </defs>
+
+      {/* Background */}
+      <rect width={W} height={H} fill="#07070A" />
+      <rect width={W} height={H} fill="url(#grid)" />
+
+      {/* Zone label overlays */}
+      {[['DOWNTOWN',268,36,'#39ff1420'],['NORTH STRIP',268,115,'#0ad6ff15'],['MID STRIP',268,320,'#FF2E8818'],['SOUTH STRIP',268,520,'#9d4edd18']].map(([z,x,y,bg]) => (
+        <text key={z} x={x} y={y} textAnchor="middle" fill="rgba(255,255,255,0.07)" fontSize="11" fontFamily="'JetBrains Mono',monospace" letterSpacing="3" fontWeight="700">{z}</text>
+      ))}
+
+      {/* Cross streets */}
+      {[80, 150, 225, 310, 420, 495, 545].map((y,i) => (
+        <line key={i} x1={60} y1={y} x2={480} y2={y} stroke="rgba(255,255,255,0.05)" strokeWidth={1} strokeDasharray="3 6" />
+      ))}
+
+      {/* Off-strip connectors */}
+      <line x1={110} y1={355} x2={255} y2={355} stroke={`${ORANGE}55`} strokeWidth={1.5} strokeDasharray="4 4" />
+      <line x1={440} y1={385} x2={285} y2={385} stroke="#f7258555" strokeWidth={1.5} strokeDasharray="4 4" />
+
+      {/* Main Strip road (glow) */}
+      <line x1={268} y1={42} x2={268} y2={610} stroke="url(#strip-grad)" strokeWidth={5} strokeLinecap="round" filter="url(#glow-pink)" opacity={0.7} />
+      <line x1={268} y1={42} x2={268} y2={610} stroke="rgba(255,255,255,0.12)" strokeWidth={2} strokeDasharray="6 8" />
+
+      {/* "LAS VEGAS BLVD" label */}
+      <text x={285} y={330} fill="rgba(255,255,255,0.1)" fontSize="9" fontFamily="'JetBrains Mono',monospace" letterSpacing="2" transform="rotate(90,285,330)">LAS VEGAS BLVD</text>
+
+      {/* Dispatch routes */}
+      {angels.filter(a => a.status === 'dispatched' && a.dispatchTo).map(a => {
+        const hotel = getHotel(a.dispatchTo);
+        if (!hotel) return null;
+        return (
+          <g key={a.id}>
+            <line x1={a.x} y1={a.y} x2={hotel.x} y2={hotel.y}
+              stroke={CYAN} strokeWidth={2} strokeDasharray="6 4" opacity={0.5}
+              className="dispatch-route" />
+            <line x1={a.x} y1={a.y} x2={hotel.x} y2={hotel.y}
+              stroke={CYAN} strokeWidth={6} strokeDasharray="6 4" opacity={0.1}
+              className="dispatch-route" />
+          </g>
+        );
+      })}
+
+      {/* Hotel nodes */}
+      {HOTELS.map(h => {
+        const sel = selectedHotel === h.id;
+        return (
+          <g key={h.id} onClick={() => onSelectHotel(h.id)} style={{ cursor:'pointer' }}>
+            {sel && <circle cx={h.x} cy={h.y} r={18} fill={`${h.color}15`} stroke={h.color} strokeWidth={1} opacity={0.6} className="pulse" />}
+            <circle cx={h.x} cy={h.y} r={sel ? 7 : 5} fill={h.color} filter="url(#glow-soft)" opacity={sel ? 1 : 0.85} />
+            <circle cx={h.x} cy={h.y} r={2} fill="white" opacity={0.9} />
+            <text x={h.x + (h.x < 268 ? -12 : 12)} y={h.y + 4}
+              textAnchor={h.x < 268 ? 'end' : (h.x > 268 ? 'start' : 'middle')}
+              fill={sel ? h.color : 'rgba(255,255,255,0.65)'}
+              fontSize={sel ? 10 : 9}
+              fontFamily="'Inter',sans-serif" fontWeight={sel ? 700 : 400}
+              dy={h.x === 268 ? -10 : 0}>
+              {h.name}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Angel markers */}
+      {angels.map(a => {
+        const color = a.status === 'available' ? GREEN : a.status === 'dispatched' ? CYAN : a.status === 'on-site' ? ACCENT : 'rgba(255,255,255,0.25)';
+        return (
+          <g key={a.id}>
+            {a.status !== 'off-duty' && <circle cx={a.x} cy={a.y} r={14} fill={`${color}12`} className="pulse" />}
+            <polygon
+              points={`${a.x},${a.y - 9} ${a.x - 7},${a.y + 6} ${a.x + 7},${a.y + 6}`}
+              fill={color} filter={a.status!=='off-duty'?'url(#glow-soft)':undefined} opacity={a.status==='off-duty'?0.3:1}
+            />
+            <text x={a.x} y={a.y + 19} textAnchor="middle" fill={color} fontSize={9} fontFamily="'JetBrains Mono',monospace" fontWeight="700" opacity={a.status==='off-duty'?0.3:1}>
+              {a.name.toUpperCase()}
+            </text>
+            {a.eta > 0 && (
+              <text x={a.x} y={a.y + 29} textAnchor="middle" fill={CYAN} fontSize={8} fontFamily="'JetBrains Mono',monospace">
+                ETA {a.eta}m
+              </text>
+            )}
+          </g>
+        );
+      })}
+
+      {/* Map legend */}
+      <g transform={`translate(12,${H - 90})`}>
+        {[[GREEN,'Available'],[CYAN,'Dispatched'],[ACCENT,'On Site'],['rgba(255,255,255,0.3)','Off Duty']].map(([c,l],i) => (
+          <g key={l} transform={`translate(0,${i*18})`}>
+            <circle cx={6} cy={6} r={4} fill={c} />
+            <text x={16} y={10} fill="rgba(255,255,255,0.45)" fontSize={9} fontFamily="'Inter',sans-serif">{l}</text>
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+/* ─── DISPATCH MODAL ─── */
+function NewDispatchModal({ onClose, onSubmit, angels }) {
+  const [angelId, setAngelId] = useState('');
+  const [hotelId, setHotelId] = useState('');
+  const [svc,     setSvc]     = useState('nude');
+  const [hrs,     setHrs]     = useState(2);
+  const [client,  setClient]  = useState('');
+
+  const hotel = HOTELS.find(h => h.id === hotelId);
+  const svcObj = SVC_RATES[svc];
+  const surcharge = hotel ? (ZONE_SURCHARGE[hotel.zone] || 0) : 0;
+  const total = svcObj ? svcObj.rate * hrs + surcharge : 0;
+  const deposit = 150;
+  const eta = hotel ? hotel.eta_base : 0;
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!angelId || !hotelId || !client) return;
+    const angel = angels.find(a => String(a.id) === angelId);
+    onSubmit({ angelName: angel?.name || '', hotel: hotel?.name || '', client, svc: svcObj?.name || '', hrs, total, deposit, eta, status:'en-route', time: new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true}) });
+    onClose();
+  };
+
+  const inp = { width:'100%', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:8, padding:'10px 12px', color:'white', fontSize:13, outline:'none', fontFamily:"'Inter',sans-serif" };
+  const lbl = { display:'block', fontSize:10, fontWeight:700, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.4)', marginBottom:6 };
+
+  return (
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', zIndex:200, display:'flex', alignItems:'center', justifyContent:'center' }} onClick={onClose}>
+      <div className="glass slide-up" style={{ width:480, borderRadius:16, padding:32, maxHeight:'90vh', overflow:'auto' }} onClick={e=>e.stopPropagation()}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24 }}>
+          <div>
+            <p className="mono" style={{ fontSize:10, color:ACCENT, letterSpacing:'0.28em', textTransform:'uppercase', marginBottom:4 }}>// NEW DISPATCH</p>
+            <h2 style={{ fontFamily:"'Syne',sans-serif", fontSize:22, fontWeight:800, color:'white' }}>Initiate Booking</h2>
+          </div>
+          <button onClick={onClose} style={{ width:36, height:36, borderRadius:'50%', background:'rgba(255,255,255,0.07)', border:'1px solid rgba(255,255,255,0.12)', color:'white', cursor:'pointer', fontSize:18, display:'flex', alignItems:'center', justifyContent:'center' }}>×</button>
+        </div>
+        <form onSubmit={submit} style={{ display:'grid', gap:16 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+            <div><label style={lbl}>Angel</label>
+              <select required value={angelId} onChange={e=>setAngelId(e.target.value)} style={inp}>
+                <option value="">Select Angel</option>
+                {angels.filter(a=>a.status==='available').map(a=><option key={a.id} value={a.id}>{a.name}</option>)}
+              </select>
+            </div>
+            <div><label style={lbl}>Hotel / Location</label>
+              <select required value={hotelId} onChange={e=>setHotelId(e.target.value)} style={inp}>
+                <option value="">Select Hotel</option>
+                {HOTELS.map(h=><option key={h.id} value={h.id}>{h.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+            <div><label style={lbl}>Service</label>
+              <select value={svc} onChange={e=>setSvc(e.target.value)} style={inp}>
+                {Object.entries(SVC_RATES).map(([k,v])=><option key={k} value={k}>{v.name}</option>)}
+              </select>
+            </div>
+            <div><label style={lbl}>Hours</label>
+              <select value={hrs} onChange={e=>setHrs(Number(e.target.value))} style={inp}>
+                {[1,2,3,4,6,8].map(h=><option key={h} value={h}>{h} {h===1?'Hour':'Hours'}</option>)}
+              </select>
+            </div>
+          </div>
+          <div><label style={lbl}>Client ID / Name</label>
+            <input required type="text" value={client} onChange={e=>setClient(e.target.value)} placeholder="e.g. VIP-001 or Michael T." style={inp} />
+          </div>
+          {hotelId && (
+            <div className="glass-pink" style={{ borderRadius:10, padding:'16px 18px', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:8, textAlign:'center' }}>
+              {[['Service',`$${SVC_RATES[svc]?.rate}/hr`],['Duration',`${hrs} hrs`],['Surcharge',surcharge>0?`+$${surcharge}`:'Free'],['Total',`$${total}`]].map(([k,v])=>(
+                <div key={k}><div className="mono" style={{ fontSize:15, fontWeight:700, color:k==='Total'?ACCENT:'white' }}>{v}</div><div style={{ fontSize:9, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.18em', marginTop:4 }}>{k}</div></div>
+              ))}
+            </div>
+          )}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+            <div className="glass" style={{ borderRadius:10, padding:'12px 16px', textAlign:'center' }}>
+              <div className="mono" style={{ fontSize:18, fontWeight:700, color:CYAN }}>{eta}m</div>
+              <div style={{ fontSize:9, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.18em', marginTop:4 }}>Est. ETA</div>
+            </div>
+            <div className="glass" style={{ borderRadius:10, padding:'12px 16px', textAlign:'center' }}>
+              <div className="mono" style={{ fontSize:18, fontWeight:700, color:GREEN }}>${deposit}</div>
+              <div style={{ fontSize:9, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.18em', marginTop:4 }}>Deposit</div>
+            </div>
+          </div>
+          <button type="submit" style={{ width:'100%', padding:'14px', borderRadius:10, background:`linear-gradient(135deg,${ACCENT},#FF5EB3)`, border:'none', color:'white', fontFamily:"'Inter',sans-serif", fontSize:14, fontWeight:700, cursor:'pointer', letterSpacing:'0.04em', boxShadow:`0 8px 28px ${ACCENT}40` }}>
+            Dispatch Now →
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ─── MAIN DASHBOARD ─── */
+function Dashboard() {
+  const [angels,      setAngels]      = useState(INIT_ANGELS);
+  const [dispatches,  setDispatches]  = useState(INIT_DISPATCHES);
+  const [selHotel,    setSelHotel]    = useState(null);
+  const [showModal,   setShowModal]   = useState(false);
+  const [qHotel,      setQHotel]      = useState('bellagio');
+  const [qSvc,        setQSvc]        = useState('nude');
+  const [qAngels,     setQAngels]     = useState(1);
+  const [qHrs,        setQHrs]        = useState(2);
+  const [activeTab,   setActiveTab]   = useState('dispatches'); // dispatches | roster
+
+  // ETA countdown
+  useEffect(() => {
+    const t = setInterval(() => {
+      setAngels(prev => prev.map(a => a.eta > 0 ? {...a, eta: Math.max(0, a.eta - 1)} : a));
+      setDispatches(prev => prev.map(d => d.eta > 0 ? {...d, eta: Math.max(0, d.eta - 1)} : d));
+    }, 60000);
+    return () => clearInterval(t);
+  }, []);
+
+  const handleNewDispatch = (dispatch) => {
+    const id = `D-${String(dispatches.length + 1).padStart(3,'0')}`;
+    setDispatches(prev => [{ id, ...dispatch }, ...prev]);
+    setAngels(prev => prev.map(a => a.name === dispatch.angelName ? { ...a, status:'dispatched', eta:dispatch.eta, dispatchTo: HOTELS.find(h=>h.name===dispatch.hotel)?.id } : a));
+  };
+
+  // Quote calc
+  const qHotelObj = HOTELS.find(h => h.id === qHotel);
+  const qSvcObj   = SVC_RATES[qSvc];
+  const qSurcharge = qHotelObj ? (ZONE_SURCHARGE[qHotelObj.zone] || 0) : 0;
+  const qTotal    = qSvcObj ? qSvcObj.rate * qAngels * qHrs + qSurcharge : 0;
+  const qDeposit  = qAngels * 150;
+  const qETA      = qHotelObj ? qHotelObj.eta_base : 0;
+
+  const available = angels.filter(a => a.status === 'available').length;
+  const active    = dispatches.filter(d => d.status !== 'completed').length;
+  const revenue   = dispatches.reduce((s,d) => s + d.total, 0);
+
+  const inp  = { background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:7, padding:'8px 10px', color:'white', fontSize:12, outline:'none', width:'100%', fontFamily:"'Inter',sans-serif" };
+  const lbl2 = { fontSize:9, fontWeight:700, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.4)', display:'block', marginBottom:5 };
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', height:'100vh', background:'#07070A' }}>
+
+      {/* ── TOP BAR ── */}
+      <header style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0 20px', height:58, borderBottom:'1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.02)', flexShrink:0, gap:16 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+          <img src="uploads/ChatGPT Image Jun 1, 2026, 12_50_41 PM.png" alt="Angel Girls" style={{ height:36, width:'auto' }} />
+          <div>
+            <p className="mono" style={{ fontSize:9, color:ACCENT, letterSpacing:'0.28em', textTransform:'uppercase' }}>DISPATCH DASHBOARD</p>
+            <p style={{ fontSize:11, color:'rgba(255,255,255,0.35)', letterSpacing:'0.1em', textTransform:'uppercase' }}>Las Vegas Operations Center</p>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display:'flex', gap:24, alignItems:'center' }}>
+          <Stat label="Available" value={available} color={GREEN} sub="ANGELS" />
+          <div style={{ width:1, height:32, background:'rgba(255,255,255,0.08)' }} />
+          <Stat label="Active" value={active} color={CYAN} sub="DISPATCHES" />
+          <div style={{ width:1, height:32, background:'rgba(255,255,255,0.08)' }} />
+          <Stat label="Tonight" value={`$${revenue.toLocaleString()}`} color={GOLD} sub="REVENUE" />
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+          <Clock />
+          <div style={{ width:1, height:28, background:'rgba(255,255,255,0.08)' }} />
+          <div className="mono" style={{ fontSize:9, color:GREEN, letterSpacing:'0.2em', display:'flex', alignItems:'center', gap:6 }}>
+            <span className="pulse" style={{ display:'inline-block', width:6, height:6, borderRadius:'50%', background:GREEN, boxShadow:`0 0 8px ${GREEN}` }} />
+            SYSTEM LIVE
+          </div>
+          <button
+            onClick={() => setShowModal(true)}
+            style={{ padding:'8px 18px', borderRadius:8, background:`linear-gradient(135deg,${ACCENT},#FF5EB3)`, border:'none', color:'white', fontFamily:"'Inter',sans-serif", fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'0.06em', boxShadow:`0 4px 16px ${ACCENT}40`, whiteSpace:'nowrap' }}
+          >
+            + New Dispatch
+          </button>
+        </div>
+      </header>
+
+      {/* ── BODY ── */}
+      <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
+
+        {/* LEFT: Angel Roster */}
+        <aside style={{ width:240, borderRight:'1px solid rgba(255,255,255,0.06)', display:'flex', flexDirection:'column', flexShrink:0 }}>
+          <div style={{ padding:'14px 16px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+            <p className="mono" style={{ fontSize:9, color:ACCENT, letterSpacing:'0.3em', textTransform:'uppercase' }}>Angel Roster</p>
+          </div>
+          <div style={{ flex:1, overflowY:'auto', padding:10, display:'flex', flexDirection:'column', gap:6 }}>
+            {angels.map(a => (
+              <div key={a.id} className="glass" style={{ borderRadius:10, padding:'10px 12px', borderColor: a.status==='on-site'?`${ACCENT}30`: a.status==='dispatched'?`${CYAN}30`:'rgba(255,255,255,0.07)' }}>
+                <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:5 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:7 }}>
+                    <StatusDot status={a.status} />
+                    <span style={{ fontSize:13, fontWeight:700, color:'white' }}>{a.name}</span>
+                    {a.isVIP && <Badge color={GOLD}>VIP</Badge>}
+                    {a.isFeat && <Badge color={ACCENT}>★</Badge>}
+                  </div>
+                </div>
+                <div className="mono" style={{ fontSize:9, color:'rgba(255,255,255,0.35)', textTransform:'uppercase', letterSpacing:'0.12em', display:'flex', justifyContent:'space-between' }}>
+                  <span className={`status-${a.status}`}>{a.status.replace('-',' ')}</span>
+                  {a.eta > 0 && <span style={{ color:CYAN }}>{a.eta}m ETA</span>}
+                </div>
+                {a.status !== 'off-duty' && (
+                  <div style={{ marginTop:6, fontSize:10, color:'rgba(255,255,255,0.3)', letterSpacing:'0.04em' }}>{a.zone.replace(/-/g,' ')}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        {/* CENTER: Map */}
+        <main style={{ flex:1, overflow:'hidden', position:'relative', background:'#06060D' }}>
+          <div style={{ position:'absolute', top:10, left:12, zIndex:10 }}>
+            <div className="mono" style={{ fontSize:9, color:'rgba(255,255,255,0.25)', letterSpacing:'0.2em', textTransform:'uppercase' }}>
+              ● LAS VEGAS STRIP · LIVE DISPATCH VIEW
+            </div>
+          </div>
+          <VegasMap angels={angels} dispatches={dispatches} selectedHotel={selHotel} onSelectHotel={id => setSelHotel(id === selHotel ? null : id)} />
+
+          {/* Hotel info card on selection */}
+          {selHotel && (() => {
+            const h = HOTELS.find(x => x.id === selHotel);
+            return (
+              <div className="glass slide-up" style={{ position:'absolute', top:36, left:'50%', transform:'translateX(-50%)', borderRadius:10, padding:'10px 20px', display:'flex', alignItems:'center', gap:20, zIndex:20 }}>
+                <div style={{ width:8, height:8, borderRadius:'50%', background:h.color, boxShadow:`0 0 10px ${h.color}`, flexShrink:0 }} />
+                <span style={{ fontSize:13, fontWeight:700, color:'white' }}>{h.name}</span>
+                <span className="mono" style={{ fontSize:10, color:'rgba(255,255,255,0.4)' }}>{h.zone.replace(/-/g,' ')}</span>
+                <span className="mono" style={{ fontSize:10, color:CYAN }}>~{h.eta_base}m ETA</span>
+                {ZONE_SURCHARGE[h.zone] > 0 && <Badge color={ORANGE}>+${ZONE_SURCHARGE[h.zone]}</Badge>}
+                <button onClick={() => { setSelHotel(null); }} style={{ background:'none', border:'none', color:'rgba(255,255,255,0.3)', cursor:'pointer', fontSize:16, lineHeight:1 }}>×</button>
+              </div>
+            );
+          })()}
+        </main>
+
+        {/* RIGHT: Quote + Dispatches */}
+        <aside style={{ width:272, borderLeft:'1px solid rgba(255,255,255,0.06)', display:'flex', flexDirection:'column', flexShrink:0 }}>
+
+          {/* QUOTE CALCULATOR */}
+          <div style={{ padding:'14px 16px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+            <p className="mono" style={{ fontSize:9, color:CYAN, letterSpacing:'0.3em', textTransform:'uppercase' }}>Quote Calculator</p>
+          </div>
+          <div style={{ padding:12, borderBottom:'1px solid rgba(255,255,255,0.06)', display:'grid', gap:10 }}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+              <div>
+                <label style={lbl2}>Hotel</label>
+                <select value={qHotel} onChange={e => setQHotel(e.target.value)} style={inp}>
+                  {HOTELS.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={lbl2}>Service</label>
+                <select value={qSvc} onChange={e => setQSvc(e.target.value)} style={inp}>
+                  {Object.entries(SVC_RATES).map(([k,v]) => <option key={k} value={k}>{v.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={lbl2}># Angels</label>
+                <select value={qAngels} onChange={e => setQAngels(Number(e.target.value))} style={inp}>
+                  {[1,2,3,4,5].map(n => <option key={n} value={n}>{n} Angel{n>1?'s':''}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={lbl2}>Hours</label>
+                <select value={qHrs} onChange={e => setQHrs(Number(e.target.value))} style={inp}>
+                  {[1,2,3,4,6,8].map(h => <option key={h} value={h}>{h} {h===1?'Hr':'Hrs'}</option>)}
+                </select>
+              </div>
+            </div>
+            {/* Quote result */}
+            <div className="glass-pink" style={{ borderRadius:10, padding:'12px 14px' }}>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6, marginBottom:8 }}>
+                {[
+                  ['Deposit', `$${qDeposit}`, ACCENT],
+                  ['ETA', `~${qETA}m`, CYAN],
+                  ['Surcharge', qSurcharge > 0 ? `+$${qSurcharge}` : 'Free', qSurcharge > 0 ? ORANGE : GREEN],
+                  ['Balance Due', `$${qTotal - qDeposit}`, 'white'],
+                ].map(([k,v,c]) => (
+                  <div key={k} style={{ background:'rgba(0,0,0,0.2)', borderRadius:7, padding:'8px 10px' }}>
+                    <div className="mono" style={{ fontSize:14, fontWeight:700, color:c }}>{v}</div>
+                    <div style={{ fontSize:9, color:'rgba(255,255,255,0.35)', textTransform:'uppercase', letterSpacing:'0.14em', marginTop:3 }}>{k}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', padding:'8px 2px 0', borderTop:'1px solid rgba(255,46,136,0.15)' }}>
+                <span style={{ fontSize:10, color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.18em' }}>Total</span>
+                <span className="mono" style={{ fontSize:22, fontWeight:800, color:ACCENT }}>${qTotal.toLocaleString()}</span>
+              </div>
+            </div>
+            <button onClick={() => setShowModal(true)} style={{ width:'100%', padding:'10px', borderRadius:8, background:`linear-gradient(135deg,${ACCENT},#FF5EB3)`, border:'none', color:'white', fontFamily:"'Inter',sans-serif", fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'0.06em' }}>
+              Dispatch →
+            </button>
+          </div>
+
+          {/* ACTIVE DISPATCHES */}
+          <div style={{ padding:'12px 16px 8px', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
+            <p className="mono" style={{ fontSize:9, color:ACCENT, letterSpacing:'0.3em', textTransform:'uppercase' }}>Active Dispatches</p>
+          </div>
+          <div style={{ flex:1, overflowY:'auto', padding:10, display:'flex', flexDirection:'column', gap:8 }}>
+            {dispatches.length === 0 && (
+              <p style={{ fontSize:12, color:'rgba(255,255,255,0.2)', textAlign:'center', marginTop:20 }}>No active dispatches</p>
+            )}
+            {dispatches.map(d => (
+              <div key={d.id} className="glass" style={{ borderRadius:10, padding:'12px 14px', borderColor: d.status==='on-site'?`${ACCENT}30`:`${CYAN}20` }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:5 }}>
+                  <span className="mono" style={{ fontSize:10, color:'rgba(255,255,255,0.35)', letterSpacing:'0.1em' }}>{d.id}</span>
+                  <Badge color={d.status==='on-site'?ACCENT:CYAN}>{d.status.replace('-',' ')}</Badge>
+                </div>
+                <p style={{ fontSize:13, fontWeight:700, color:'white', marginBottom:3 }}>{d.angelName} → {d.hotel}</p>
+                <p style={{ fontSize:11, color:'rgba(255,255,255,0.45)', marginBottom:6 }}>{d.svc} · {d.hrs}hr · {d.client}</p>
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:11 }}>
+                  <span className="mono" style={{ color:GOLD, fontWeight:700 }}>${d.total.toLocaleString()}</span>
+                  <span className="mono" style={{ color:d.eta > 0 ? CYAN : GREEN }}>
+                    {d.eta > 0 ? `${d.eta}m ETA` : '● On Site'}
+                  </span>
+                </div>
+                <div style={{ marginTop:6, fontSize:10, color:'rgba(255,255,255,0.25)' }}>Started {d.time}</div>
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <NewDispatchModal
+          onClose={() => setShowModal(false)}
+          onSubmit={handleNewDispatch}
+          angels={angels}
+        />
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
+</script>
+</body>
+</html>
