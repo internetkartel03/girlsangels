@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
+<title>Angel Girls | Elite Las Vegas Outcall Dancers & VIP Companions</title>
+<meta name="description" content="Angel Girls — Premium Las Vegas Outcall Companions. Verified, flat rates, 24/7." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<script src="config/env.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/client.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: '#FF2E88',
+          'accent-hover': '#E01A6E',
+          gold: '#FFC72C',
+          dark: '#07070A',
+          surface: '#121217'
+        },
+        fontFamily: {
+          sans: ['Inter','system-ui','sans-serif'],
+          display: ['Syne','sans-serif'],
+          mono: ['JetBrains Mono','monospace']
+        },
+        scale: { '102':'1.02','103':'1.03','110':'1.10','120':'1.20','130':'1.30' }
+      }
+    }
+  }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *{box-sizing:border-box;}
+  html{background:#07070A;scroll-behavior:smooth;overflow-x:hidden;}
+  body{font-family:'Inter',sans-serif;background:#07070A;margin:0;overflow-x:hidden;user-select:none;}
+  ::selection{background:#FF2E88;color:#fff;}
+  ::-webkit-scrollbar{width:6px;}
+  ::-webkit-scrollbar-track{background:#07070A;}
+  ::-webkit-scrollbar-thumb{background:#191924;border-radius:3px;}
+  ::-webkit-scrollbar-thumb:hover{background:#FF2E88;box-shadow:0 0 10px #FF2E88;}
+  .glow-pink{text-shadow:0 0 10px rgba(255,46,136,.6),0 0 20px rgba(255,46,136,.4);}
+  .glow-gold{text-shadow:0 0 10px rgba(255,199,44,.6),0 0 20px rgba(255,199,44,.4);}
+  .page-enter{animation:pgIn .4s ease both;}
+  @keyframes pgIn{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+  /* Global readable defaults */
+  p{font-family:'Inter',sans-serif;font-size:15px;line-height:1.7;}
+  h1,h2,h3,h4{font-family:'Syne',sans-serif;line-height:1.15;}
+  button,input,select,textarea{font-family:'Inter',sans-serif;}
+  input::placeholder,textarea::placeholder{color:rgba(255,255,255,0.3);}
+  /* Clamp oversized clamp values on tiny screens */
+  @media(max-width:400px){
+    *{letter-spacing:normal!important;word-break:break-word;}
+  }
+  #ag-cursor{position:fixed;width:18px;height:18px;border-radius:50%;background:rgba(255,46,136,.65);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 22px rgba(255,46,136,.8);mix-blend-mode:screen;transition:width .15s,height .15s;}
+  @media(max-width:768px){#ag-cursor{display:none;}}
+  input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1) opacity(.5);}
+  select option{background:#121217;color:#fff;}
+  .neon-dot{animation:ndot 2s ease-in-out infinite;}
+  @keyframes ndot{0%,100%{box-shadow:0 0 6px currentColor;}50%{box-shadow:0 0 18px currentColor;}}
+  .strip-scroll{animation:sscroll 36s linear infinite;}
+  @keyframes sscroll{to{transform:translateX(-50%);}}
+</style>
+</head>
+<body>
+<div id="ag-cursor"></div>
+<div id="root"></div>
+<script>
+  const cur = document.getElementById('ag-cursor');
+  let mx=-200,my=-200,cx=-200,cy=-200;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function tick(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(tick);})();
+</script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="components/icons.jsx"></script>
+<script type="text/babel" src="components/AgeGate.jsx"></script>
+<script type="text/babel" src="components/ParticleBackground.jsx"></script>
+<script type="text/babel" src="components/Nav.jsx"></script>
+<script type="text/babel" src="components/GirlsShowcase.jsx"></script>
+<script type="text/babel" src="components/VegasStripMap.jsx"></script>
+<script type="text/babel" src="components/BookingPage.jsx"></script>
+<script type="text/babel" src="components/AgreementPage.jsx"></script>
+<script type="text/babel" src="components/PaymentPage.jsx"></script>
+<script type="text/babel" src="components/HomePage.jsx"></script>
+<script type="text/babel" src="components/SecondaryPages.jsx"></script>
+<script type="text/babel" src="App.jsx"></script>
+</body>
+</html>
