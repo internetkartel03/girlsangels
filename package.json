@@ -1,0 +1,15 @@
+{
+  "name": "angel-girls-entertainment",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static Angel Girls Entertainment website deployed on Vercel.",
+  "scripts": {
+    "build": "node -e \"console.log('Static site: no build step required')\"",
+    "start": "node -e \"console.log('This project is deployed as a static Vercel site.')\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
