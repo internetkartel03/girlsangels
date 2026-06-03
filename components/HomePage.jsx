@@ -18,20 +18,18 @@ function HomePage({ navigateTo, phone }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, fontFamily: "'Inter',sans-serif", overflow: 'hidden' }}>
 
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        src="uploads/home-background.mp4"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', zIndex: 0 }}
+      {/* Video Background - ScreenPal Embed */}
+      <iframe
+        title="Background Video"
+        src="https://go.screenpal.com/watch/cO1enxnujxV?embed=true"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', zIndex: 0, objectFit: 'cover' }}
+        allowFullScreen
       />
 
       {/* Overlays */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom,rgba(7,7,10,0.78) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top,rgba(7,7,10,0.97) 0%,rgba(7,7,10,0.55) 60%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center,transparent 35%,rgba(7,7,10,0.3) 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom,rgba(7,7,10,0.3) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top,rgba(7,7,10,0.4) 0%,rgba(7,7,10,0.2) 60%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center,transparent 35%,rgba(7,7,10,0.1) 100%)', zIndex: 1, pointerEvents: 'none' }} />
 
 
 
