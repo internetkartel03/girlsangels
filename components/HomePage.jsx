@@ -18,22 +18,22 @@ function HomePage({ navigateTo, phone }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, fontFamily: "'Inter',sans-serif", overflow: 'hidden' }}>
 
-      {/* Video Background - Streaming from ScreenPal */}
-      <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0, background: '#000' }}>
-        <iframe
-          title="Background Video"
-          src="https://go.screenpal.com/player/cO1enxnujxV?autoplay=true&nocontrols=true&hideplaybar=true&loop=true"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
-          frameBorder="0"
-          allowFullScreen={false}
-          allow="autoplay; fullscreen"
-        />
+      {/* Video Background - Full coverage with pure black fallback */}
+      <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0, background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', display: 'block' }}
+        >
+          <source src="uploads/home-video-bg.mp4" type="video/mp4" />
+        </video>
       </div>
 
-      {/* Overlays */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom,rgba(7,7,10,0.3) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top,rgba(7,7,10,0.4) 0%,rgba(7,7,10,0.2) 60%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center,transparent 35%,rgba(7,7,10,0.1) 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      {/* Minimal Overlays - let video shine through */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '25%', background: 'linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.3) 50%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
 
 
 
