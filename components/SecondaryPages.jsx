@@ -237,10 +237,8 @@ function HiringPage({ navigateTo }) {
 
   if (submitted) return (
     <div className="page-enter" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-      <video autoPlay muted loop playsInline style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
-        <source src={window.__resources && window.__resources.hiringVideo || 'uploads/grok-video-0d817a87-1576-4236-8036-8822de706ecb (3).mp4'} type="video/mp4" />
-      </video>
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(7,7,10,0.82)', zIndex: 1 }} />
+      <img src={window.__resources && window.__resources.hiringBg || 'uploads/hiring-bg.jpg'} alt="Hiring Background" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }} />
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(7,7,10,0.55)', zIndex: 1 }} />
       <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '40px 24px', maxWidth: 480 }}>
         <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(255,46,136,0.15)', border: '1px solid rgba(255,46,136,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px' }}>
           <Icon name="check-circle" size={36} className="text-accent" />
@@ -260,12 +258,10 @@ function HiringPage({ navigateTo }) {
   return (
     <div className="page-enter" style={{ position: 'relative', minHeight: '100vh', overflow: 'hidden' }}>
 
-      {/* Video background */}
-      <video autoPlay muted loop playsInline style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }}>
-        <source src={window.__resources && window.__resources.hiringVideo || 'uploads/grok-video-0d817a87-1576-4236-8036-8822de706ecb (3).mp4'} type="video/mp4" />
-      </video>
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(7,7,10,0.78)', zIndex: 1 }} />
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to top,rgba(7,7,10,0.95),transparent)', zIndex: 1, pointerEvents: 'none' }} />
+      {/* Background Image */}
+      <img src={window.__resources && window.__resources.hiringBg || 'uploads/hiring-bg.jpg'} alt="Hiring Background" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }} />
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(7,7,10,0.45)', zIndex: 1 }} />
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top,rgba(7,7,10,0.75),transparent)', zIndex: 1, pointerEvents: 'none' }} />
 
       {/* Content */}
       <div style={{ position: 'relative', zIndex: 2, maxWidth: 720, margin: '0 auto', padding: 'clamp(110px,15vw,150px) clamp(20px,5vw,48px) 80px' }}>

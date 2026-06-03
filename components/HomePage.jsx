@@ -19,7 +19,7 @@ function HomePage({ navigateTo, phone }) {
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, fontFamily: "'Inter',sans-serif", overflow: 'hidden' }}>
 
       {/* Video Background - Full coverage with pure black fallback */}
-      <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0, background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: 'clamp(50px,8vw,70px)', left: 0, right: 0, bottom: 0, width: '100%', zIndex: 0, background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
         <video
           autoPlay
           muted
