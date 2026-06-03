@@ -61,13 +61,11 @@ function AboutPage({ navigateTo, phone }) {
 
   return (
     <div className="page-enter" style={{ position: 'relative', minHeight: '100vh' }}>
-      {/* VIDEO BG */}
-      <video autoPlay muted loop playsInline style={{ position: 'fixed', inset: 0, objectFit: 'cover', objectPosition: 'center center', zIndex: 0, background: '#05050a', width: '100%', height: '100%' }}>
-        <source src={window.__resources && window.__resources.aboutVideo || 'uploads/_users_f3ed8cc9-8c71-4628-9fbe-58850ab1e4b8_generated_2ffadf18-fee1-4f02-9fc1-d65100a44d38_generated_video.mp4'} type="video/mp4" />
-      </video>
-      {/* darker overlay — mutes video, improves text legibility */}
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,5,10,0.65)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '20%', background: 'linear-gradient(to top,rgba(5,5,10,0.9),transparent)', zIndex: 1, pointerEvents: 'none' }} />
+      {/* BACKGROUND IMAGE */}
+      <img src={window.__resources && window.__resources.aboutBg || 'uploads/about-bg.jpg'} alt="About Us Background" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', zIndex: 0 }} />
+      {/* darker overlay — improves text legibility while showing background */}
+      <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,5,10,0.45)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '25%', background: 'linear-gradient(to top,rgba(5,5,10,0.75),transparent)', zIndex: 1, pointerEvents: 'none' }} />
 
       {/* ── HERO: centered, lets video show ── */}
       <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', textAlign: 'center', alignItems: 'center', gap: 24, padding: '120px 24px 60px' }}>
