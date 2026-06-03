@@ -52,7 +52,7 @@ function AgeGate({ onVerified }) {
       className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6"
       style={{
         minHeight: '100vh', width: '100vw',
-        backgroundImage: "url('" + ((window.__resources && window.__resources.ageBg) || 'uploads/grok-image-3f41cd88-b81c-4084-ba10-c040c3153a6c.png') + "')",
+        backgroundImage: "url('" + ((window.__resources && window.__resources.ageBg) || 'uploads/age-gate-bg.jpg') + "')",
         backgroundSize: 'cover',
         backgroundPosition: 'center top',
         backgroundRepeat: 'no-repeat'

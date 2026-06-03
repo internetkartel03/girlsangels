@@ -18,17 +18,22 @@ function HomePage({ navigateTo, phone }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, fontFamily: "'Inter',sans-serif", overflow: 'hidden' }}>
 
-      {/* Video */}
-      <img
-        src="uploads/Untitled design.png"
-        alt="Angel Girls"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', zIndex: 0, transform: 'scale(0.85)', transformOrigin: 'center center' }}
-      />
+      {/* Video Background - Full coverage with pure black fallback */}
+      <div style={{ position: 'absolute', top: 'clamp(50px,8vw,70px)', left: 0, right: 0, bottom: 0, width: '100%', zIndex: 0, background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', display: 'block' }}
+        >
+          <source src="uploads/home-video-bg.mp4" type="video/mp4" />
+        </video>
+      </div>
 
-      {/* Overlays */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom,rgba(7,7,10,0.78) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top,rgba(7,7,10,0.97) 0%,rgba(7,7,10,0.55) 60%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center,transparent 35%,rgba(7,7,10,0.3) 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      {/* Minimal Overlays - let video shine through */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '25%', background: 'linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.3) 50%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
 
 
 

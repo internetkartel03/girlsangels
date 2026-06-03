@@ -1,6 +1,6 @@
 const { useState, useEffect } = React;
 
-const PHONE = '702-556-3772';
+const PHONE = '702-703-5488';
 
 function App() {
   const [ageVerified, setAgeVerified] = useState(null);
