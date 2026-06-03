@@ -18,13 +18,17 @@ function HomePage({ navigateTo, phone }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, fontFamily: "'Inter',sans-serif", overflow: 'hidden' }}>
 
-      {/* Video Background - ScreenPal Embed */}
-      <iframe
-        title="Background Video"
-        src="https://go.screenpal.com/watch/cO1enxnujxV?embed=true"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', zIndex: 0, objectFit: 'cover' }}
-        allowFullScreen
-      />
+      {/* Video Background - Streaming from ScreenPal */}
+      <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0, background: '#000' }}>
+        <iframe
+          title="Background Video"
+          src="https://go.screenpal.com/player/cO1enxnujxV?autoplay=true&nocontrols=true&hideplaybar=true&loop=true"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
+          frameBorder="0"
+          allowFullScreen={false}
+          allow="autoplay; fullscreen"
+        />
+      </div>
 
       {/* Overlays */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '30%', background: 'linear-gradient(to bottom,rgba(7,7,10,0.3) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
