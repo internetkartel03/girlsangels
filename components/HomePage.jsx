@@ -18,11 +18,14 @@ function HomePage({ navigateTo, phone }) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 5, fontFamily: "'Inter',sans-serif", overflow: 'hidden' }}>
 
-      {/* Video */}
-      <img
-        src="uploads/Untitled design.png"
-        alt="Angel Girls"
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'center center', zIndex: 0, transform: 'scale(0.85)', transformOrigin: 'center center' }}
+      {/* Video Background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        src="uploads/home-background.mp4"
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', zIndex: 0 }}
       />
 
       {/* Overlays */}
