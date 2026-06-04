@@ -1,6 +1,6 @@
 const { useState, useEffect } = React;
 
-const PHONE = '702-556-3772';
+const PHONE = '702-703-5488';
 
 function App() {
   const [ageVerified, setAgeVerified] = useState(null);
@@ -113,6 +113,9 @@ function App() {
 
   return (
     <div className="relative min-h-screen bg-[#07070A] text-white font-sans overflow-x-hidden">
+
+      {/* Install Prompt */}
+      <InstallPrompt />
 
       {/* 3D Particle Background — hidden on home (video takes over) */}
       {activeView !== 'home' && <ParticleBackground />}
