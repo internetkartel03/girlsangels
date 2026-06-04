@@ -38,7 +38,7 @@ function HomePage({ navigateTo, phone }) {
 
 
       {/* Bottom-right logo + discreet staff portal link */}
-      <div style={{ position:'absolute', bottom:'calc(max(16px,env(safe-area-inset-bottom)) + 56px)', right:'clamp(14px,4vw,48px)', zIndex:11, pointerEvents:'none', display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
+      <div style={{ position:'absolute', bottom:'120px', left:'50%', transform:'translateX(-50%)', zIndex:40, pointerEvents:'auto', display:'flex', flexDirection:'column', alignItems:'center', whiteSpace:'nowrap', gap:6 }}>
         <img
           src={(window.__resources && window.__resources.logo) || 'uploads/ChatGPT Image Jun 1, 2026, 12_50_41 PM.png'}
           alt="Angel Girls"
@@ -52,7 +52,7 @@ function HomePage({ navigateTo, phone }) {
       </div>
 
       {/* Bottom 3-button bar */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10, paddingBottom: 'max(24px,env(safe-area-inset-bottom))' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 30, paddingBottom: 'calc(env(safe-area-inset-bottom)+24px)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', maxWidth: 640, margin: '0 auto', padding: '0 16px', gap: 10 }}>
           {buttons.map((btn, i) =>
           <button key={i} onClick={btn.action}
