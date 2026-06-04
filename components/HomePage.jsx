@@ -33,7 +33,7 @@ function HomePage({ navigateTo, phone }) {
 
       {/* Minimal Overlays - let video shine through */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '25%', background: 'linear-gradient(to bottom,rgba(0,0,0,0.2) 0%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '50%', background: 'linear-gradient(to top,rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.3) 50%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '40%', background: 'linear-gradient(to top,rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.2) 60%,transparent 100%)', zIndex: 1, pointerEvents: 'none' }} />
 
 
 
