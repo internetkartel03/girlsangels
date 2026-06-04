@@ -61,8 +61,8 @@ function AboutPage({ navigateTo, phone }) {
 
   return (
     <div className="page-enter" style={{ position: 'relative', minHeight: '100vh' }}>
-      {/* BACKGROUND IMAGE */}
-      <img src={window.__resources && window.__resources.aboutBg || 'uploads/about-us-bg.jpg'} alt="About Us Background" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', zIndex: 0 }} />
+      {/* BACKGROUND IMAGE */}       <style>{`         @media (max-width: 768px) {           .about-bg-img {             position: relative !important;             width: 100% !important;             height: auto !important;             max-height: none !important;             object-fit: contain !important;             object-position: center center !important;             inset: unset !important;             top: unset !important;             left: unset !important;             z-index: 0 !important;           }           .about-page-wrapper {             min-height: unset !important;           }           .about-hero-content {             min-height: unset !important;             padding-top: 80px !important;             padding-bottom: 40px !important;           }         }       `}</style>
+      <img src={window.__resources && window.__resources.aboutBg || 'uploads/about-us-bg.jpg'} alt="About Us Background" className="about-bg-img" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', zIndex: 0 }} />
       {/* darker overlay — improves text legibility while showing background */}
       <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,5,10,0.45)', zIndex: 1, pointerEvents: 'none' }} />
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '25%', background: 'linear-gradient(to top,rgba(5,5,10,0.75),transparent)', zIndex: 1, pointerEvents: 'none' }} />
