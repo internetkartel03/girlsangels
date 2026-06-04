@@ -60,14 +60,9 @@ function AboutPage({ navigateTo, phone }) {
 
 
   return (
-    <div className="page-enter" style={{ position: 'relative', minHeight: '100vh' }}>
-      {/* BACKGROUND IMAGE */}
-      <img src={window.__resources && window.__resources.aboutBg || 'uploads/about-us-bg.jpg'} alt="About Us Background" style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center', zIndex: 0 }} />
-      {/* darker overlay — improves text legibility while showing background */}
-      <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,5,10,0.45)', zIndex: 1, pointerEvents: 'none' }} />
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: '25%', background: 'linear-gradient(to top,rgba(5,5,10,0.75),transparent)', zIndex: 1, pointerEvents: 'none' }} />
+    <div className="page-enter" style={{ position: 'relative', minHeight: '100vh', background: 'linear-gradient(135deg, #07070A 0%, #0f0f15 100%)' }}>
 
-      {/* ── HERO: centered, lets video show ── */}
+      {/* ── HERO: centered ── */}
       <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', textAlign: 'center', alignItems: 'center', gap: 24, padding: '120px 24px 60px' }}>
         <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,46,136,0.85)', margin: 0 }}>Las Vegas · 24/7 Outcall</p>
         <h1 style={{ fontSize: `${t.heroTitleSize}px`, fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.15, maxWidth: 700, textShadow: '0 2px 40px rgba(0,0,0,0.8)', fontFamily: t.heroTitleFont, margin: 0 }}>
@@ -81,9 +76,39 @@ function AboutPage({ navigateTo, phone }) {
         </div>
       </div>
 
-      {/* ── CONTENT: scrolls over video, sparse glass panels ── */}
-      <div style={{ position: 'relative', zIndex: 2, marginTop: '100vh', fontWeight: 400 }}>
-      <div style={{ maxWidth: 820, margin: '0 auto', display: 'grid', gap: 40, padding: '0 40px 100px', fontFamily: 'system-ui' }}>
+      {/* ── CONTENT: scrolls over gradient, sparse glass panels ── */}
+      <div style={{ position: 'relative', zIndex: 2, fontWeight: 400 }}>
+      
+      {/* ── FRAMED IMAGE SECTION ── */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '80px 20px 60px', fontFamily: 'system-ui' }}>
+        <div style={{ 
+          marginX: 'auto', 
+          width: '100%', 
+          maxWidth: '900px',
+          borderRadius: '24px',
+          border: '1px solid rgba(236, 72, 153, 0.3)',
+          background: 'rgba(0, 0, 0, 0.4)',
+          padding: '8px',
+          boxShadow: '0 0 40px rgba(236, 72, 153, 0.25)',
+          margin: '0 auto'
+        }}>
+          <img 
+            src={window.__resources && window.__resources.aboutBg || 'uploads/about-us-bg.jpg'} 
+            alt="About Us - Angel Girls Elite Las Vegas Outcall Agency" 
+            style={{ 
+              width: '100%',
+              height: 'auto',
+              objectFit: 'contain',
+              objectPosition: 'center',
+              borderRadius: '20px',
+              display: 'block',
+              backgroundColor: '#000'
+            }} 
+          />
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 820, margin: '0 auto', display: 'grid', gap: 40, padding: '40px 40px 100px', fontFamily: 'system-ui' }}>
 
         {/* Intro — no card, just text */}
         <div style={{ textAlign: 'center' }}>
@@ -393,7 +418,7 @@ function HiringPage({ navigateTo }) {
 
 }
 
-/* ══════════════════════════════════════
+/* ═════���════════════════════════════════
    TERMS OF SERVICE
 ══════════════════════════════════════ */
 function TermsPage({ navigateTo }) {
