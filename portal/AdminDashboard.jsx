@@ -335,11 +335,11 @@ function AdminPricing({ flash }) {
       </PCard>
 
       <PCard>
-        <PSectionHeader label="Deposit & Surcharges" sub="Applied per Angel at checkout" />
+        <PSectionHeader label="Reservation Fees & Surcharges" sub="Applied per Angel at checkout" />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '14px 16px', background: 'rgba(255,255,255,0.02)', borderRadius: 11, border: `1px solid ${PC.border}`, flexWrap: 'wrap' }}>
             <div>
-              <p style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 14, color: 'white', margin: '0 0 4px' }}>Deposit per Angel</p>
+              <p style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 14, color: 'white', margin: '0 0 4px' }}>Reservation Fee per Angel</p>
               <p style={{ fontSize: 12, color: PC.textFaint, margin: 0 }}>Non-refundable, credited toward total</p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

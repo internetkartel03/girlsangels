@@ -36,10 +36,10 @@ function AboutPage({ navigateTo, phone }) {
   } /*EDITMODE-END*/;
   const [t, setTweak] = useTweaks(ABOUT_DEFAULTS);
   const services = [
-  ['Full Nude Private Dancing', 'In-suite sensual choreography for penthouse and hotel-room private events. Flat hourly rate, no add-ons.'],
-  ['Topless Exotic Dancing', 'High-energy, tasteful topless performances for bachelor parties, VIP pools, and hospitality tables.'],
-  ['Pool Party Hosting', 'Bikini-clad social companions hosting private cabanas, charter boats, or off-Strip estate pools.'],
-  ['Arm Candy / Dinner Date', 'Sophisticated, fully clothed companion accompaniment for casino floors, fine dining, and private events.']];
+  ['Elite Private Performance', 'Immersive private entertainment experience featuring elite performers, elevated ambiance, and VIP energy.'],
+  ['Signature Entertainment Experience', 'High-energy nightlife-inspired entertainment curated for private suites, celebrations, and VIP hospitality settings.'],
+  ['VIP Event Entertainment', 'Energetic entertainers and social hosts for luxury pool parties, private cabanas, and upscale events.'],
+  ['Executive Social Experience', 'Sophisticated companionship for upscale dinners, nightlife experiences, casino outings, and exclusive social events.']];
 
 
   const compliance = [
@@ -71,10 +71,10 @@ function AboutPage({ navigateTo, phone }) {
       <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', justifyContent: 'center', minHeight: '100vh', textAlign: 'center', alignItems: 'center', gap: 24, padding: '120px 24px 60px' }}>
         <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,46,136,0.85)', margin: 0 }}>Las Vegas · 24/7 Outcall</p>
         <h1 style={{ fontSize: `${t.heroTitleSize}px`, fontWeight: 800, color: 'white', letterSpacing: '-0.02em', lineHeight: 1.15, maxWidth: 700, textShadow: '0 2px 40px rgba(0,0,0,0.8)', fontFamily: t.heroTitleFont, margin: 0 }}>
-          Vegas's Most Elite<br /><span style={{ color: t.accentColor }}>Private Entertainer Agency</span>
+          Where Luxury Hospitality Meets<br /><span style={{ color: t.accentColor }}>Unforgettable Entertainment</span>
         </h1>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
-          <button onClick={() => navigateTo('booking')} style={{ padding: '13px 30px', borderRadius: 12, background: 'linear-gradient(135deg,#FF2E88,#FF5EB3)', color: 'white', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', boxShadow: '0 8px 28px rgba(255,46,136,0.45)', letterSpacing: '0.04em' }}>Book an Angel Tonight</button>
+          <button onClick={() => navigateTo('booking')} style={{ padding: '13px 30px', borderRadius: 12, background: 'linear-gradient(135deg,#FF2E88,#FF5EB3)', color: 'white', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', boxShadow: '0 8px 28px rgba(255,46,136,0.45)', letterSpacing: '0.04em' }}>Book Your Experience</button>
           <a href={`tel:${phone}`} style={{ padding: '13px 28px', borderRadius: 12, background: 'rgba(255,255,255,0.07)', color: 'white', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, border: '1px solid rgba(255,255,255,0.18)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, backdropFilter: 'blur(14px)' }}>
             <Icon name="phone-call" size={15} /> {phone}
           </a>
@@ -88,7 +88,7 @@ function AboutPage({ navigateTo, phone }) {
         {/* Intro — no card, just text */}
         <div style={{ textAlign: 'center' }}>
           <p style={{ color: 'rgba(255,255,255,0.85)', lineHeight: 1.85, margin: '0 auto', fontSize: `${t.introParagraphSize}px`, fontFamily: t.introFont, maxWidth: 680 }}>
-            Angel Girls is a fully licensed Las Vegas outcall entertainment agency connecting discerning VIP clients with verified, background-screened independent entertainer-companions across the Las Vegas Strip and surrounding resort corridors — 24 hours a day, 7 days a week.
+            Angel Girls Entertainment is Las Vegas’ premier luxury entertainment collective, offering elevated hospitality experiences for private events, nightlife celebrations, VIP gatherings, and exclusive occasions. We connect clients with carefully vetted independent entertainers known for professionalism, beauty, charisma, and discretion. Available 24/7 throughout Las Vegas and surrounding resort destinations.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ function AboutPage({ navigateTo, phone }) {
         {/* Why Us — 4 inline stats */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '2px' }}>
           {[
-            ['Verified Photos', 'Real ID-checked photos. Private gallery after $150 deposit.'],
+            ['Verified Photos', 'Real ID-checked photos. Private gallery after the $200 reservation fee.'],
             ['Flat Rates', 'No tip games. Price confirmed = price paid.'],
             ['24/7 Dispatch', 'Live human concierge, every booking.'],
             ['Encrypted', 'Signal-grade delivery. Neutral billing descriptor.']].
@@ -148,14 +148,14 @@ function AboutPage({ navigateTo, phone }) {
 
         {/* Deposit policy — glass panel */}
         <div style={{ background: 'rgba(255,46,136,0.05)', border: '1px solid rgba(255,46,136,0.15)', borderRadius: 12, padding: '28px 28px' }}>
-          <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,46,136,0.7)', margin: '0 0 10px' }}>Deposit & Payment Policy</p>
-          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(18px,2.5vw,22px)', fontWeight: 800, color: 'white', margin: '0 0 14px' }}>$150 Non-Refundable Deposit</p>
+          <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,46,136,0.7)', margin: '0 0 10px' }}>Reservation Fee & Payment Policy</p>
+          <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(18px,2.5vw,22px)', fontWeight: 800, color: 'white', margin: '0 0 14px' }}>$200 Non-Refundable Reservation Fee</p>
           <ul style={{ margin: '0 0 12px', paddingLeft: 18, display: 'grid', gap: 8 }}>
             {[
-              'Deposit is 100% non-refundable — no exceptions.',
-              'Credited 1:1 toward total on arrival.',
+              'Reservation fee is 100% non-refundable — no exceptions.',
+              'Reservation fee is credited 1:1 toward total on arrival.',
               'No chargebacks permitted — constitutes breach of contract.',
-              'Cancellations within 2 hrs forfeit deposit in full.',
+              'Cancellations within 2 hrs forfeit the reservation fee in full.',
               'Agency-initiated cancellations: full refund issued.'].
               map((item, i) =>
               <li key={i} style={{ fontFamily: "'Inter',sans-serif", fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>{item}</li>
@@ -184,7 +184,7 @@ function AboutPage({ navigateTo, phone }) {
           <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 'clamp(20px,3vw,28px)', fontWeight: 800, color: 'white', margin: '0 0 8px' }}>Ready to Book?</p>
           <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 14, color: 'rgba(255,255,255,0.5)', margin: '0 0 28px' }}>Submit a reservation in under 90 seconds.</p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
-            <button onClick={() => navigateTo('booking')} style={{ padding: '14px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#FF2E88,#FF5EB3)', color: 'white', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', boxShadow: '0 8px 28px rgba(255,46,136,0.4)' }}>Book an Angel Tonight</button>
+            <button onClick={() => navigateTo('booking')} style={{ padding: '14px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#FF2E88,#FF5EB3)', color: 'white', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 700, cursor: 'pointer', border: 'none', boxShadow: '0 8px 28px rgba(255,46,136,0.4)' }}>Book Your Experience</button>
             <a href={`tel:${phone}`} style={{ padding: '14px 28px', borderRadius: 12, background: 'rgba(255,255,255,0.07)', color: 'white', fontFamily: "'Inter',sans-serif", fontSize: 13, fontWeight: 600, border: '1px solid rgba(255,255,255,0.14)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8, backdropFilter: 'blur(12px)' }}>
               <Icon name="phone-call" size={15} /> Call Now
             </a>
@@ -362,7 +362,7 @@ function HiringPage({ navigateTo }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: 0 }}>
             {[
             { label: 'Home', view: 'home', desc: 'Enter Angel Girls' },
-            { label: 'Book an Angel', view: 'booking', desc: 'Reserve your private show' },
+            { label: 'Book Your Experience', view: 'booking', desc: 'Customize your reservation' },
             { label: 'About Us', view: 'about', desc: 'Agency info & legal compliance' },
             { label: 'Join the Roster', view: 'hiring', desc: 'Apply to become an Angel' },
             { label: 'Terms of Service', view: 'terms', desc: 'Booking terms & policies' },

@@ -4,7 +4,7 @@ function HomePage({ navigateTo, phone }) {
   const imgRef = useRef(null);
 
   const buttons = [
-  { label: 'Book Tonight', sub: '$200 deposit', action: () => navigateTo('booking'), accent: true },
+  { label: 'Book Your Experience', sub: '$200 reservation fee', action: () => navigateTo('booking'), accent: true },
   { label: 'View Angels', sub: 'Full roster', action: () => navigateTo('booking'), accent: false },
   { label: 'Call 24 / 7', sub: phone, action: () => {window.location.href = `tel:${phone}`;}, accent: false }];
 

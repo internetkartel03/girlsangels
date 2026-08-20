@@ -202,7 +202,7 @@ function GalleryModal({ girl, onClose, onSelect, isSelected }) {
       {/* Footer CTA */}
       <div style={{ padding: '18px 28px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 16 }}>
         <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'JetBrains Mono,monospace', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
-          $150 deposit unlocks full verified gallery
+          $200 reservation fee unlocks full verified gallery
         </p>
         <button
           onClick={() => {onSelect(girl.id);onClose();}}
@@ -399,7 +399,7 @@ function GirlsShowcase({ selectedGirlIds, onToggleGirl }) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
             View {active.gallery.length + 1} Photos
           </button>
-          <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'JetBrains Mono,monospace', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>FULL GALLERY UNLOCKS AFTER $200 DEPOSIT
+          <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'JetBrains Mono,monospace', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>FULL GALLERY UNLOCKS AFTER $200 RESERVATION FEE
 
           </p>
         </div>

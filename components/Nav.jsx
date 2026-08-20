@@ -101,7 +101,7 @@ function Nav({ activeView, navigateTo, phone }) {
               <a href={`tel:${phone}`} className="flex items-center gap-3 text-lg font-extrabold text-accent glow-pink">
                 <Icon name="phone-call" size={20} /> {phone}
               </a>
-              <p className="text-[10px] text-white/40 leading-relaxed">Call/text available 24/7. Verified galleries unlocked instantly on deposit.</p>
+              <p className="text-[10px] text-white/40 leading-relaxed">Call/text available 24/7. Verified galleries unlocked instantly after the reservation fee.</p>
             </div>
           </div>
         </div>
