@@ -4,8 +4,9 @@
   "private": true,
   "description": "Static Angel Girls Entertainment website deployed on Vercel.",
   "scripts": {
+    "dev": "python3 -m http.server 3000",
     "build": "node -e \"console.log('Static site: no build step required')\"",
-    "start": "node -e \"console.log('This project is deployed as a static Vercel site.')\""
+    "start": "python3 -m http.server 3000"
   },
   "engines": {
     "node": ">=20"
