@@ -122,7 +122,7 @@ function PaymentPage({ booking, agreement, onSuccess, onBack }) {
       <div style={{ fontSize:56, marginBottom:20 }}>✅</div>
       <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(24px,6vw,36px)', fontWeight:800, color:'white', margin:'0 0 12px' }}>Payment Confirmed</h1>
       <p style={{ color:'rgba(255,255,255,0.55)', fontSize:16, lineHeight:1.7, maxWidth:420, margin:'0 0 24px' }}>
-        Your ${depositAmount} deposit was received.<br />
+        Your ${depositAmount} reservation fee was received.<br />
         Transaction: <span style={{ fontFamily:"'JetBrains Mono',monospace", color:'#FF2E88', fontSize:13 }}>{done.transactionId}</span>
       </p>
       {done.mock && <p style={{ fontSize:11, color:'rgba(255,199,44,0.6)', fontFamily:"'JetBrains Mono',monospace" }}>TEST MODE — no real charge was made</p>}
@@ -141,7 +141,7 @@ function PaymentPage({ booking, agreement, onSuccess, onBack }) {
         <div style={{ textAlign:'center', paddingTop:12 }}>
           <img src="uploads/ChatGPT Image Jun 1, 2026, 12_50_41 PM.png" alt="Angel Girls" style={{ height:48, width:'auto', marginBottom:12, filter:'drop-shadow(0 0 16px rgba(255,46,136,0.45))' }} />
           <p style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.28em', textTransform:'uppercase', color:'rgba(255,46,136,0.7)', margin:'0 0 6px' }}>Secure Checkout</p>
-          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(22px,5vw,28px)', fontWeight:800, color:'white', margin:0 }}>Booking Deposit</h1>
+          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(22px,5vw,28px)', fontWeight:800, color:'white', margin:0 }}>Reservation Fee</h1>
         </div>
 
         {/* Agreement confirmed badge */}
@@ -173,7 +173,7 @@ function PaymentPage({ booking, agreement, onSuccess, onBack }) {
             ))}
           </div>
           <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid rgba(255,255,255,0.07)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-            <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:700, fontSize:14, color:'rgba(255,255,255,0.7)' }}>Deposit Due Now</span>
+            <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:700, fontSize:14, color:'rgba(255,255,255,0.7)' }}>Reservation Fee Due Now</span>
             <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:28, color:'#FF2E88' }}>${depositAmount}</span>
           </div>
         </div>
@@ -241,7 +241,7 @@ function PaymentPage({ booking, agreement, onSuccess, onBack }) {
             disabled={processing || !cardNumber || !expiry || !cvv}
             style={{ width:'100%', padding:'17px', background: (!processing && cardNumber && expiry && cvv) ? 'linear-gradient(135deg,#FF2E88,#FF5EB3)' : 'rgba(255,255,255,0.07)', border:'none', borderRadius:14, color: (!processing && cardNumber && expiry && cvv) ? 'white' : 'rgba(255,255,255,0.25)', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(14px,4vw,16px)', cursor: (!processing && cardNumber && expiry && cvv) ? 'pointer' : 'not-allowed', letterSpacing:'0.04em', transition:'all .2s', boxShadow: (!processing && cardNumber) ? '0 8px 32px rgba(255,46,136,0.4)' : 'none', minHeight:54 }}
           >
-            {processing ? '🔒 Processing…' : `Pay $${depositAmount} Deposit →`}
+            {processing ? '🔒 Processing…' : `Pay $${depositAmount} Reservation Fee →`}
           </button>
         </div>
       </div>
