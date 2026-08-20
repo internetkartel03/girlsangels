@@ -5,8 +5,8 @@ function getLivePricing() {
   return { services: [], depositPerAngel: 200, offStripSurcharge: 50 };
 }
 const SERVICE_META = {
-  nude:      { description: 'Full nude private exotic dancing. Absolute exclusivity, elite performers.', badge: 'Elite Premium' },
-  topless:   { description: 'High-energy topless sensual routines for penthouses & VIP hospitality.', badge: 'Popular Choice' },
+  nude:      { description: 'Immersive private entertainment experience featuring elite performers, elevated ambiance, and VIP energy.', badge: 'Elite Premium' },
+  topless:   { description: 'High-energy nightlife-inspired entertainment curated for private suites, celebrations, and VIP hospitality settings.', badge: 'Popular Choice' },
   pool:      { description: 'Sensational dancers hosting luxury cabanas, private pools & VIP suites.', badge: 'Bachelor Event' },
   companion: { description: 'Sophisticated companion for dinners, casino tables & exclusive events.', badge: 'Ultimate Discretion' }
 };
@@ -15,10 +15,10 @@ function buildServiceOptions() {
   if (p.services && p.services.length)
     return p.services.map(s => ({ id: s.id, name: s.name, hourlyRate: s.hourlyRate, ...(SERVICE_META[s.id] || { description: '', badge: '' }) }));
   return [
-    { id: 'nude',      name: 'Full Nude Private Dancing',    hourlyRate: 800, ...SERVICE_META.nude },
-    { id: 'topless',   name: 'Topless Private Dancing',      hourlyRate: 650, ...SERVICE_META.topless },
-    { id: 'pool',      name: 'Pool Party / VIP Events',      hourlyRate: 550, ...SERVICE_META.pool },
-    { id: 'companion', name: 'Arm Candy / VIP Dinner Date',  hourlyRate: 550, ...SERVICE_META.companion }
+    { id: 'nude',      name: 'Elite Private Performance',           hourlyRate: 800, ...SERVICE_META.nude },
+    { id: 'topless',   name: 'Signature Entertainment Experience',  hourlyRate: 650, ...SERVICE_META.topless },
+    { id: 'pool',      name: 'VIP Event Entertainment',             hourlyRate: 550, ...SERVICE_META.pool },
+    { id: 'companion', name: 'Executive Social Experience',         hourlyRate: 550, ...SERVICE_META.companion }
   ];
 }
 
@@ -71,7 +71,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
         {/* ── Logo + Header ─────────────────────────────── */}
         <div style={{ textAlign:'center', paddingTop:12 }}>
           <img src="uploads/ChatGPT Image Jun 1, 2026, 12_50_41 PM.png" alt="Angel Girls" style={{ height:'clamp(52px,12vw,80px)', width:'auto', marginBottom:16, filter:'drop-shadow(0 0 20px rgba(255,46,136,0.5))' }} />
-          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(26px,6vw,38px)', fontWeight:800, color:'white', margin:'0 0 10px', letterSpacing:'-0.02em' }}>Reserve Your Angels</h1>
+          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(26px,6vw,38px)', fontWeight:800, color:'white', margin:'0 0 10px', letterSpacing:'-0.02em' }}>Book Your Experience</h1>
           <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'clamp(13px,3vw,15px)', lineHeight:1.7, margin:0 }}>Las Vegas · 24 / 7 Outcall · Verified & Discreet</p>
         </div>
 
@@ -97,7 +97,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
         <div style={sect}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
             <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>3</span>
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Choose Service & Duration</span>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Customize Your Booking</span>
           </div>
           <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:20 }}>
             {serviceOptions.map(opt => {
@@ -174,16 +174,16 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
               <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:22, color:'white' }}>${total - deposit}</span>
             </div>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', background:'rgba(255,46,136,0.15)', border:'1px solid rgba(255,46,136,0.3)', borderRadius:12 }}>
-              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'#FF2E88', fontWeight:700 }}>Deposit Now</span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'#FF2E88', fontWeight:700 }}>Reservation Fee</span>
               <span style={{ fontFamily:"'Inter',sans-serif", fontWeight:800, fontSize:22, color:'#FF2E88' }}>${deposit}</span>
             </div>
-            <p style={{ fontSize:11, color:'rgba(255,255,255,0.3)', marginTop:8, lineHeight:1.6 }}>Deposit is non-refundable and credited 1:1 toward your total.</p>
+            <p style={{ fontSize:11, color:'rgba(255,255,255,0.3)', marginTop:8, lineHeight:1.6 }}>Reservation fee is non-refundable and credited 1:1 toward your total.</p>
           </div>
 
           {errorText && <div style={{ padding:'12px 16px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.25)', borderRadius:12, color:'#fca5a5', fontSize:13, textAlign:'center' }}>{errorText}</div>}
 
           <button type="submit" style={{ width:'100%', padding:'18px', background:'linear-gradient(135deg,#FF2E88,#FF5EB3)', border:'none', borderRadius:16, color:'white', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(14px,3.5vw,17px)', cursor:'pointer', letterSpacing:'0.04em', boxShadow:'0 8px 32px rgba(255,46,136,0.4)', minHeight:56 }}>
-            Reserve Angels & Unlock Galleries
+            Book Your Experience & Unlock Galleries
           </button>
         </form>
 

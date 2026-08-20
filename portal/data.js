@@ -10,10 +10,10 @@
 
   const DEFAULT_PRICING = {
     services: [
-      { id: 'nude',      name: 'Full Nude Private Dancing',    hourlyRate: 800 },
-      { id: 'topless',   name: 'Topless Private Dancing',      hourlyRate: 650 },
-      { id: 'pool',      name: 'Pool Party / VIP Club Events', hourlyRate: 550 },
-      { id: 'companion', name: 'Arm Candy / VIP Dinner Date',  hourlyRate: 550 }
+      { id: 'nude',      name: 'Elite Private Performance',           hourlyRate: 800 },
+      { id: 'topless',   name: 'Signature Entertainment Experience',  hourlyRate: 650 },
+      { id: 'pool',      name: 'VIP Event Entertainment',             hourlyRate: 550 },
+      { id: 'companion', name: 'Executive Social Experience',         hourlyRate: 550 }
     ],
     depositPerAngel: 200,
     offStripSurcharge: 50

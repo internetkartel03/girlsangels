@@ -45,7 +45,7 @@ function Nav({ activeView, navigateTo, phone }) {
             onClick={() => navigateTo('booking')}
             className="hidden md:inline-block font-mono text-[11px] text-white bg-accent hover:bg-accent-hover font-black uppercase tracking-widest px-5 py-2.5 rounded shadow-lg shadow-accent/15 transition-all cursor-pointer hover:scale-102">
             
-            Book Now
+            Book Your Experience
           </button>
           <button
             onClick={() => setOpen(true)}
@@ -101,7 +101,7 @@ function Nav({ activeView, navigateTo, phone }) {
               <a href={`tel:${phone}`} className="flex items-center gap-3 text-lg font-extrabold text-accent glow-pink">
                 <Icon name="phone-call" size={20} /> {phone}
               </a>
-              <p className="text-[10px] text-white/40 leading-relaxed">Call/text available 24/7. Verified galleries unlocked instantly on deposit.</p>
+              <p className="text-[10px] text-white/40 leading-relaxed">Call/text available 24/7. Verified galleries unlocked instantly on reservation fee.</p>
             </div>
           </div>
         </div>

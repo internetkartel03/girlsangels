@@ -40,7 +40,7 @@ async function chargePayKings({ amount, cardNumber, expiry, cvv, billingZip, cus
     amount:         parseFloat(amount).toFixed(2),
     currency:       'USD',
     order_id:       orderId,
-    description:    'Angel Girls Entertainment Booking Deposit',
+    description:    'Angel Girls Entertainment Booking Reservation Fee',
     card: {
       number:     cardNumber.replace(/\s/g, ''),
       exp_month:  expMonth,

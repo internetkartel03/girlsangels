@@ -84,10 +84,10 @@ CREATE TABLE IF NOT EXISTS applications (
 CREATE TABLE IF NOT EXISTS pricing (
   id                  INTEGER PRIMARY KEY DEFAULT 1,
   services            JSONB NOT NULL DEFAULT '[
-    {"id":"nude","name":"Full Nude Private Dancing","hourlyRate":800},
-    {"id":"topless","name":"Topless Private Dancing","hourlyRate":650},
-    {"id":"pool","name":"Pool Party / VIP Club Events","hourlyRate":550},
-    {"id":"companion","name":"Arm Candy / VIP Dinner Date","hourlyRate":550}
+    {"id":"nude","name":"Elite Private Performance","hourlyRate":800},
+    {"id":"topless","name":"Signature Entertainment Experience","hourlyRate":650},
+    {"id":"pool","name":"VIP Event Entertainment","hourlyRate":550},
+    {"id":"companion","name":"Executive Social Experience","hourlyRate":550}
   ]',
   deposit_per_angel   DECIMAL(10,2) DEFAULT 200,
   off_strip_surcharge DECIMAL(10,2) DEFAULT 50,
