@@ -30,7 +30,7 @@ function App() {
       if (h === '#/locations/downtown') setActiveView('location-downtown');else
       if (h === '#/locations/off-strip-west') setActiveView('location-off-strip-west');else
       if (h === '#/locations/off-strip-east') setActiveView('location-off-strip-east');else
-      setActiveView('home');
+      if (!h || h === '#/' || h === '#') setActiveView('home');
     };
 
     window.addEventListener('hashchange', handleHash);
