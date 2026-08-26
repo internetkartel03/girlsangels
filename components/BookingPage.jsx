@@ -32,6 +32,13 @@ function buildServiceOptions() {
   return defaults;
 }
 
+function getBookingCopy() {
+  try {
+    if (window.PortalData) return window.PortalData.getSettings();
+  } catch {}
+  return {};
+}
+
 function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
   const [serviceId, setServiceId]       = useState('nude');
   const [hours, setHours]               = useState(2);
@@ -53,6 +60,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
     setDate(`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`);
   }, []);
 
+  const copy     = getBookingCopy();
   const svc      = serviceOptions.find(s => s.id === serviceId) || serviceOptions[0];
   const minAngels = svc?.minimumAngels || 1;
   const n        = Math.max(1, selectedGirlIds.length);
@@ -85,15 +93,15 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
         {/* ── Logo + Header ─────────────────────────────── */}
         <div style={{ textAlign:'center', paddingTop:12 }}>
           <img src="uploads/ChatGPT Image Jun 1, 2026, 12_50_41 PM.png" alt="Angel Girls" style={{ height:'clamp(52px,12vw,80px)', width:'auto', marginBottom:16, filter:'drop-shadow(0 0 20px rgba(255,46,136,0.5))' }} />
-          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(26px,6vw,38px)', fontWeight:800, color:'white', margin:'0 0 10px', letterSpacing:'-0.02em' }}>Reserve Your Angels</h1>
-          <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'clamp(13px,3vw,15px)', lineHeight:1.7, margin:0 }}>Las Vegas · 24 / 7 Outcall · Verified & Discreet</p>
+          <h1 style={{ fontFamily:"'Syne',sans-serif", fontSize:'clamp(26px,6vw,38px)', fontWeight:800, color:'white', margin:'0 0 10px', letterSpacing:'-0.02em' }}>{copy.bookingHeadline || 'Reserve Your Angels'}</h1>
+          <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'clamp(13px,3vw,15px)', lineHeight:1.7, margin:0 }}>{copy.bookingSubheadline || 'Las Vegas · 24 / 7 Outcall · Verified & Discreet'}</p>
         </div>
 
         {/* ── Step 1: Location Map ───────────────────────── */}
         <div style={sect}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
             <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>1</span>
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Select Your Vegas Location</span>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>{copy.step1Label || 'Select Your Vegas Location'}</span>
           </div>
           <VegasStripMap selectedZoneId={selectedZoneId} onSelectZone={zone => { setZoneId(zone.id); setLocation(zone.representativeAddress); }} />
         </div>
@@ -103,7 +111,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8, marginBottom:16 }}>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>2</span>
-              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Choose Your Angels</span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>{copy.step2Label || 'Choose Your Angels'}</span>
             </div>
             {minAngels > 1 && (
               <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.15em', textTransform:'uppercase', color: selectedGirlIds.length >= minAngels ? '#22c55e' : '#FF2E88', background: selectedGirlIds.length >= minAngels ? 'rgba(34,197,94,0.1)' : 'rgba(255,46,136,0.1)', padding:'3px 10px', borderRadius:20, border:`1px solid ${selectedGirlIds.length >= minAngels ? 'rgba(34,197,94,0.3)' : 'rgba(255,46,136,0.3)'}` }}>
@@ -118,7 +126,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
         <div style={sect}>
           <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
             <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>3</span>
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Customize Your Booking</span>
+            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>{copy.step3Label || 'Customize Your Booking'}</span>
           </div>
           <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:20 }}>
             {serviceOptions.map(opt => {
@@ -160,7 +168,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
           <div style={sect}>
             <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:20 }}>
               <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>4</span>
-              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Your Details & Suite</span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>{copy.step4Label || 'Your Details & Suite'}</span>
             </div>
             <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
@@ -176,7 +184,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
                 <div><label style={lbl}>Date</label><input type="date" value={date} onChange={e=>setDate(e.target.value)} style={inp} /></div>
                 <div><label style={lbl}>Start Time</label><input type="text" value={time} onChange={e=>setTime(e.target.value)} placeholder="10:00 PM" style={inp} /></div>
               </div>
-              <div><label style={lbl}>Special Requests</label><textarea value={instructions} onChange={e=>setInstructions(e.target.value)} placeholder="Vibe, preferences, champagne toast..." rows={3} style={{ ...inp, resize:'vertical' }} /></div>
+              <div><label style={lbl}>Special Requests</label><textarea value={instructions} onChange={e=>setInstructions(e.target.value)} placeholder={copy.specialRequestsPlaceholder || 'Vibe, preferences, champagne toast...'} rows={3} style={{ ...inp, resize:'vertical' }} /></div>
             </div>
           </div>
 
@@ -192,20 +200,20 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
               ))}
             </div>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
-              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:12, color:'rgba(255,255,255,0.6)' }}>Balance on Arrival</span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:12, color:'rgba(255,255,255,0.6)' }}>{copy.billingBalanceLabel || 'Balance on Arrival'}</span>
               <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:22, color:'white' }}>${total - deposit}</span>
             </div>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', background:'rgba(255,46,136,0.15)', border:'1px solid rgba(255,46,136,0.3)', borderRadius:12 }}>
-              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'#FF2E88', fontWeight:700 }}>Reservation Fee</span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:11, color:'#FF2E88', fontWeight:700 }}>{copy.billingFeeLabel || 'Reservation Fee'}</span>
               <span style={{ fontFamily:"'Inter',sans-serif", fontWeight:800, fontSize:22, color:'#FF2E88' }}>${deposit}</span>
             </div>
-            <p style={{ fontSize:11, color:'rgba(255,255,255,0.3)', marginTop:8, lineHeight:1.6 }}>Reservation fee is non-refundable and credited 1:1 toward your total.</p>
+            <p style={{ fontSize:11, color:'rgba(255,255,255,0.3)', marginTop:8, lineHeight:1.6 }}>{copy.billingNote || 'Reservation fee is non-refundable and credited 1:1 toward your total.'}</p>
           </div>
 
           {errorText && <div style={{ padding:'12px 16px', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.25)', borderRadius:12, color:'#fca5a5', fontSize:13, textAlign:'center' }}>{errorText}</div>}
 
           <button type="submit" style={{ width:'100%', padding:'18px', background:'linear-gradient(135deg,#FF2E88,#FF5EB3)', border:'none', borderRadius:16, color:'white', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(14px,3.5vw,17px)', cursor:'pointer', letterSpacing:'0.04em', boxShadow:'0 8px 32px rgba(255,46,136,0.4)', minHeight:56 }}>
-            Reserve Angels & Unlock Galleries
+            {copy.submitButtonText || 'Reserve Angels & Unlock Galleries'}
           </button>
         </form>
 

@@ -18,6 +18,7 @@ function AdminDashboard() {
     { id: 'girls',         label: 'All Angels' },
     { id: 'pricing',       label: 'Pricing' },
     { id: 'booking-rules', label: 'Booking Rules' },
+    { id: 'content',       label: 'Page Content' },
     { id: 'applications',  label: 'Applications', count: newApps || undefined },
     { id: 'settings',      label: 'Site Settings' },
     { id: 'agreements',    label: 'Agreements' },
@@ -42,6 +43,7 @@ function AdminDashboard() {
       {tab === 'girls'         && <AdminGirls         girls={girls} reload={reload} flash={flash} />}
       {tab === 'pricing'       && <AdminPricing       flash={flash} />}
       {tab === 'booking-rules' && <AdminBookingRules  flash={flash} />}
+      {tab === 'content'       && <AdminContent       flash={flash} />}
       {tab === 'applications'  && <AdminApplications  flash={flash} />}
       {tab === 'settings'      && <AdminSettings      flash={flash} />}
       {tab === 'agreements'    && <AdminAgreements />}
@@ -462,6 +464,114 @@ function AdminAgreements() {
           <PButton variant="danger" size="sm" onClick={() => clear(a.id)}>Remove Record</PButton>
         </PCard>
       ))}
+    </div>
+  );
+}
+
+// ── Page Content ─────────────────────────────────────────────────
+function AdminContent({ flash }) {
+  const [settings, setSettings] = useAS(() => window.PortalData.getSettings());
+  const [dirty, setDirty] = useAS(false);
+  const [saving, setSaving] = useAS(false);
+
+  const update = (field, val) => {
+    setSettings(s => ({ ...s, [field]: val }));
+    setDirty(true);
+  };
+
+  const save = () => {
+    setSaving(true);
+    try {
+      window.PortalData.saveSettings(settings);
+      setDirty(false);
+      flash('Page content saved — live on site immediately.');
+    } catch {
+      flash('Error saving. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const GROUPS = [
+    {
+      title: 'Booking Page — Hero',
+      fields: [
+        { key: 'bookingHeadline',    label: 'Main Headline',   hint: 'Large heading at top of booking page' },
+        { key: 'bookingSubheadline', label: 'Subheadline',     hint: 'Smaller text below the headline' },
+      ]
+    },
+    {
+      title: 'Booking Page — Step Labels',
+      fields: [
+        { key: 'step1Label', label: 'Step 1 Label', hint: 'Location section header' },
+        { key: 'step2Label', label: 'Step 2 Label', hint: 'Angel selection section header' },
+        { key: 'step3Label', label: 'Step 3 Label', hint: 'Service & duration section header' },
+        { key: 'step4Label', label: 'Step 4 Label', hint: 'Contact details section header' },
+      ]
+    },
+    {
+      title: 'Booking Page — Form & Billing',
+      fields: [
+        { key: 'specialRequestsPlaceholder', label: 'Special Requests Placeholder', hint: 'Hint text inside the special requests box' },
+        { key: 'submitButtonText',           label: 'Submit Button Text',           hint: 'Text on the reservation button' },
+        { key: 'billingBalanceLabel',        label: 'Balance Label',               hint: '"Balance on Arrival" line label' },
+        { key: 'billingFeeLabel',            label: 'Reservation Fee Label',       hint: 'Label on the pink fee box' },
+        { key: 'billingNote',                label: 'Billing Disclaimer',          hint: 'Small print below the fee box', multiline: true },
+      ]
+    },
+    {
+      title: 'Gallery & Navigation',
+      fields: [
+        { key: 'galleryDepositText', label: 'Gallery Unlock Text', hint: 'Text shown under gallery / in modal footer' },
+        { key: 'footerTagline',      label: 'Footer Tagline',      hint: 'Tagline shown in footer and nav bar' },
+      ]
+    },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 640 }}>
+
+      {/* Unsaved changes banner */}
+      {dirty && (
+        <div style={{ padding: '12px 18px', background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.2)', borderRadius: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+          <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: PC.warning, letterSpacing: '0.1em' }}>● Unsaved changes</span>
+          <PButton onClick={save} disabled={saving} size="sm">{saving ? 'Saving…' : 'Save Now'}</PButton>
+        </div>
+      )}
+
+      {GROUPS.map(group => (
+        <PCard key={group.title}>
+          <PSectionHeader label={group.title} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {group.fields.map(({ key, label, hint, multiline }) => (
+              <div key={key}>
+                <label style={{ display: 'block', fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: PC.textFaint, marginBottom: 6 }}>{label}</label>
+                {multiline
+                  ? <textarea rows={3} value={settings[key] || ''} onChange={e => update(key, e.target.value)}
+                      style={{ width: '100%', padding: '12px 14px', background: 'rgba(255,255,255,0.04)', border: `1px solid ${PC.border}`, borderRadius: 10, color: 'white', fontSize: 13, outline: 'none', fontFamily: "'Inter',sans-serif", resize: 'vertical', boxSizing: 'border-box', lineHeight: 1.6 }} />
+                  : <input type="text" value={settings[key] || ''} onChange={e => update(key, e.target.value)}
+                      style={{ width: '100%', padding: '12px 14px', background: 'rgba(255,255,255,0.04)', border: `1px solid ${PC.border}`, borderRadius: 10, color: 'white', fontSize: 14, outline: 'none', fontFamily: "'Inter',sans-serif", boxSizing: 'border-box' }} />
+                }
+                {hint && <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: PC.textFaint, margin: '5px 0 0', opacity: 0.6 }}>{hint}</p>}
+              </div>
+            ))}
+          </div>
+        </PCard>
+      ))}
+
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <PButton onClick={save} disabled={!dirty || saving}>
+          {saving ? 'Saving…' : dirty ? 'Save Page Content' : 'Saved ✓'}
+        </PButton>
+        <PButton variant="ghost" onClick={() => { setSettings(window.PortalData.getDefaultSettings()); setDirty(true); }}>Reset to Defaults</PButton>
+      </div>
+
+      <PCard style={{ background: PC.successBg, border: '1px solid rgba(34,197,94,0.12)' }}>
+        <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(34,197,94,0.7)', marginBottom: 6 }}>Live Sync</p>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, margin: 0 }}>
+          Changes saved here appear on the public booking page <strong style={{ color: 'white' }}>immediately</strong> — no deployment required. Service names and descriptions are edited in the <strong style={{ color: 'white' }}>Booking Rules</strong> tab.
+        </p>
+      </PCard>
     </div>
   );
 }

@@ -11,11 +11,29 @@
   const ADMIN        = { username: 'AngelGirl', password: 'Welcome5!' };
 
   const DEFAULT_SETTINGS = {
+    // Business info
     businessEmail:       'Angelgirlss222@gmail.com',
     phone:               '702-703-5488',
-    galleryDepositText:  '$200 reservation fee unlocks full verified gallery',
     siteName:            'Angel Girls Entertainment',
     footerTagline:       'Las Vegas · 24/7 Outcall · Verified & Discreet',
+    galleryDepositText:  '$200 reservation fee unlocks full verified gallery',
+
+    // Booking page — hero
+    bookingHeadline:     'Reserve Your Angels',
+    bookingSubheadline:  'Las Vegas · 24 / 7 Outcall · Verified & Discreet',
+
+    // Booking page — step labels
+    step1Label:          'Select Your Vegas Location',
+    step2Label:          'Choose Your Angels',
+    step3Label:          'Customize Your Booking',
+    step4Label:          'Your Details & Suite',
+
+    // Booking page — form & billing
+    specialRequestsPlaceholder: 'Vibe, preferences, champagne toast...',
+    submitButtonText:    'Reserve Angels & Unlock Galleries',
+    billingNote:         'Reservation fee is non-refundable and credited 1:1 toward your total.',
+    billingBalanceLabel: 'Balance on Arrival',
+    billingFeeLabel:     'Reservation Fee',
   };
 
   const DEFAULT_PRICING = {
