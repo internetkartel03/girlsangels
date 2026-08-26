@@ -83,7 +83,36 @@ const eliteGirls = [
 }];
 
 
-const N = eliteGirls.length;
+// Filter against admin visibility settings. Returns only active girls.
+function getVisibleGirls() {
+  try {
+    if (!window.PortalData) return eliteGirls;
+    const portalGirls = window.PortalData.getGirls();
+    if (!portalGirls || !portalGirls.length) return eliteGirls;
+    // Build map by stageName for O(1) lookup
+    const statusMap = {};
+    portalGirls.forEach(pg => {
+      statusMap[(pg.approved.stageName || '').toLowerCase()] = pg.approved.publicStatus;
+    });
+    return eliteGirls.filter(g => {
+      const status = statusMap[g.name.toLowerCase()];
+      // If no matching portal entry, default to visible (show new additions)
+      if (status === undefined) return true;
+      return status === 'active';
+    });
+  } catch { return eliteGirls; }
+}
+
+function getGalleryDepositText() {
+  try {
+    if (window.PortalData) {
+      const s = window.PortalData.getSettings();
+      return s.galleryDepositText || '$200 reservation fee unlocks full verified gallery';
+    }
+  } catch {}
+  return '$200 reservation fee unlocks full verified gallery';
+}
+
 const EASE = 'cubic-bezier(0.4,0,0.2,1)';
 const T = `650ms ${EASE}`;
 
@@ -202,7 +231,7 @@ function GalleryModal({ girl, onClose, onSelect, isSelected }) {
       {/* Footer CTA */}
       <div style={{ padding: '18px 28px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, gap: 16 }}>
         <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, fontFamily: 'JetBrains Mono,monospace', letterSpacing: '0.15em', textTransform: 'uppercase', margin: 0 }}>
-          $200 reservation fee unlocks full verified gallery
+          {getGalleryDepositText()}
         </p>
         <button
           onClick={() => {onSelect(girl.id);onClose();}}
@@ -222,18 +251,23 @@ function GirlsShowcase({ selectedGirlIds, onToggleGirl }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
   const [showGallery, setShowGallery] = useState(false);
   const [bioKey, setBioKey] = useState(0); // triggers fade
+  const [visibleGirls, setVisibleGirls] = useState(() => getVisibleGirls());
 
   useEffect(() => {
+    const girls = getVisibleGirls();
+    setVisibleGirls(girls);
     const onResize = () => setIsMobile(window.innerWidth < 640);
     window.addEventListener('resize', onResize);
-    eliteGirls.forEach((g) => {
+    girls.forEach((g) => {
       [g.image, ...g.gallery].forEach((src) => {const i = new Image();i.src = src;});
     });
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
+  const N = visibleGirls.length;
+
   const navigate = (dir) => {
-    if (isAnimating) return;
+    if (isAnimating || N === 0) return;
     setIsAnimating(true);
     setActiveIndex((prev) => dir === 'next' ? (prev + 1) % N : (prev + N - 1) % N);
     setBioKey((k) => k + 1);
@@ -248,11 +282,13 @@ function GirlsShowcase({ selectedGirlIds, onToggleGirl }) {
     setTimeout(() => setIsAnimating(false), 650);
   };
 
-  const active = eliteGirls[activeIndex];
+  if (!visibleGirls.length) return <div style={{ textAlign:'center', color:'rgba(255,255,255,0.4)', padding:40, fontFamily:"'JetBrains Mono',monospace", fontSize:12 }}>No Angels currently available.</div>;
+  const safeIndex = activeIndex >= visibleGirls.length ? 0 : activeIndex;
+  const active = visibleGirls[safeIndex];
   const isSelected = selectedGirlIds.includes(active.id);
 
   const getRoleForIndex = (i) => {
-    const diff = ((i - activeIndex) % N + N) % N;
+    const diff = ((i - safeIndex) % N + N) % N;
     if (diff === 0) return 'center';
     if (diff === N - 1) return 'left';
     if (diff === 1) return 'right';
@@ -287,14 +323,14 @@ function GirlsShowcase({ selectedGirlIds, onToggleGirl }) {
 
           {/* Progress dots */}
           <div style={{ position: 'absolute', top: 20, left: '50%', transform: 'translateX(-50%)', zIndex: 60, display: 'flex', gap: 6 }}>
-            {eliteGirls.map((_, i) =>
-            <div key={i} onClick={() => goTo(i)} style={{ width: i === activeIndex ? 22 : 6, height: 6, borderRadius: 999, background: 'white', opacity: i === activeIndex ? .85 : .25, transition: `all 400ms ${EASE}`, cursor: 'pointer' }} />
+            {visibleGirls.map((_, i) =>
+            <div key={i} onClick={() => goTo(i)} style={{ width: i === safeIndex ? 22 : 6, height: 6, borderRadius: 999, background: 'white', opacity: i === safeIndex ? .85 : .25, transition: `all 400ms ${EASE}`, cursor: 'pointer' }} />
             )}
           </div>
 
           {/* Carousel items */}
           <div style={{ position: 'absolute', inset: 0, zIndex: 3 }}>
-            {eliteGirls.map((girl, i) => {
+            {visibleGirls.map((girl, i) => {
               const role = getRoleForIndex(i);
               const s = getRoleStyle(role);
               return (
@@ -399,9 +435,7 @@ function GirlsShowcase({ selectedGirlIds, onToggleGirl }) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
             View {active.gallery.length + 1} Photos
           </button>
-          <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'JetBrains Mono,monospace', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>FULL GALLERY UNLOCKS AFTER $200 RESERVATION FEE
-
-          </p>
+          <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 11, fontFamily: 'JetBrains Mono,monospace', letterSpacing: '0.1em', textTransform: 'uppercase', margin: 0 }}>{getGalleryDepositText()}</p>
         </div>
       </div>
 

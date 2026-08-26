@@ -10,14 +10,18 @@ function AdminDashboard() {
   const flash = msg => { setToast(msg); setTimeout(() => setToast(''), 3000); };
 
   const pendingCount = girls.filter(g => g.pending?.status === 'pending').length;
+  const newApps = window.PortalData.getApplications().filter(a => a.status === 'pending').length;
 
   const tabs = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'approvals', label: 'Approvals', count: pendingCount || undefined },
-    { id: 'girls', label: 'All Angels' },
-    { id: 'pricing', label: 'Pricing' },
-    { id: 'agreements', label: 'Agreements' },
-    { id: 'add', label: '+ New Angel' }
+    { id: 'overview',      label: 'Overview' },
+    { id: 'approvals',     label: 'Approvals', count: pendingCount || undefined },
+    { id: 'girls',         label: 'All Angels' },
+    { id: 'pricing',       label: 'Pricing' },
+    { id: 'booking-rules', label: 'Booking Rules' },
+    { id: 'applications',  label: 'Applications', count: newApps || undefined },
+    { id: 'settings',      label: 'Site Settings' },
+    { id: 'agreements',    label: 'Agreements' },
+    { id: 'add',           label: '+ New Angel' }
   ];
 
   return (
@@ -33,12 +37,15 @@ function AdminDashboard() {
 
       <PTabBar tabs={tabs} active={tab} onChange={setTab} />
 
-      {tab === 'overview'  && <AdminOverview  girls={girls} />}
-      {tab === 'approvals' && <AdminApprovals girls={girls} reload={reload} flash={flash} />}
-      {tab === 'girls'     && <AdminGirls     girls={girls} reload={reload} flash={flash} />}
-      {tab === 'pricing'    && <AdminPricing    flash={flash} />}
-      {tab === 'agreements' && <AdminAgreements />}
-      {tab === 'add'        && <AdminAddGirl   reload={reload} flash={flash} onDone={() => setTab('girls')} />}
+      {tab === 'overview'      && <AdminOverview      girls={girls} />}
+      {tab === 'approvals'     && <AdminApprovals     girls={girls} reload={reload} flash={flash} />}
+      {tab === 'girls'         && <AdminGirls         girls={girls} reload={reload} flash={flash} />}
+      {tab === 'pricing'       && <AdminPricing       flash={flash} />}
+      {tab === 'booking-rules' && <AdminBookingRules  flash={flash} />}
+      {tab === 'applications'  && <AdminApplications  flash={flash} />}
+      {tab === 'settings'      && <AdminSettings      flash={flash} />}
+      {tab === 'agreements'    && <AdminAgreements />}
+      {tab === 'add'           && <AdminAddGirl       reload={reload} flash={flash} onDone={() => setTab('girls')} />}
     </div>
   );
 }
@@ -47,6 +54,7 @@ function AdminDashboard() {
 function AdminOverview({ girls }) {
   const active   = girls.filter(g => g.approved.publicStatus === 'active').length;
   const hidden   = girls.filter(g => g.approved.publicStatus === 'hidden').length;
+  const archived = girls.filter(g => g.approved.publicStatus === 'archived').length;
   const pending  = girls.filter(g => g.pending?.status === 'pending').length;
 
   return (
@@ -55,6 +63,7 @@ function AdminOverview({ girls }) {
         <PStatCard label="Total Angels" value={girls.length} color="white" />
         <PStatCard label="Active / Public" value={active} color={PC.success} />
         <PStatCard label="Hidden" value={hidden} color="#6b7280" />
+        <PStatCard label="Archived" value={archived} color="#374151" />
         <PStatCard label="Pending Review" value={pending} color={PC.warning} />
       </div>
 
@@ -218,10 +227,10 @@ function AdminGirls({ girls, reload, flash }) {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  {['active', 'hidden'].map(s => (
-                    <button key={s} onClick={() => setStatus(g.id, s)} style={{ padding: '5px 13px', borderRadius: 8, border: `1px solid ${g.approved.publicStatus === s ? PC.accent : PC.border}`, background: g.approved.publicStatus === s ? PC.accentBg : 'transparent', color: g.approved.publicStatus === s ? PC.accent : PC.textFaint, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', transition: 'all .15s', fontWeight: 600 }}>
-                      {s}
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {[{id:'active',label:'Active',color:PC.success},{id:'hidden',label:'Hidden',color:PC.textFaint},{id:'archived',label:'Archive',color:'#ef4444'}].map(({id:s,label,color}) => (
+                    <button key={s} onClick={() => setStatus(g.id, s)} style={{ padding: '5px 13px', borderRadius: 8, border: `1px solid ${g.approved.publicStatus === s ? color : PC.border}`, background: g.approved.publicStatus === s ? (s === 'active' ? PC.successBg : s === 'archived' ? 'rgba(239,68,68,0.1)' : PC.accentBg) : 'transparent', color: g.approved.publicStatus === s ? color : PC.textFaint, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', transition: 'all .15s', fontWeight: 600 }}>
+                      {label}
                     </button>
                   ))}
                 </div>
@@ -453,6 +462,207 @@ function AdminAgreements() {
           <PButton variant="danger" size="sm" onClick={() => clear(a.id)}>Remove Record</PButton>
         </PCard>
       ))}
+    </div>
+  );
+}
+
+// ── Booking Rules ─────────────────────────────────────────────────
+function AdminBookingRules({ flash }) {
+  const [pricing, setPricing] = useAS(() => window.PortalData.getPricing());
+  const [dirty, setDirty] = useAS(false);
+
+  const updateSvc = (id, field, val) => {
+    setPricing(p => ({ ...p, services: p.services.map(s => s.id === id ? { ...s, [field]: field === 'active' ? val : Number(val) } : s) }));
+    setDirty(true);
+  };
+
+  const save = () => {
+    window.PortalData.savePricing(pricing);
+    setDirty(false);
+    flash('Booking rules saved — changes apply immediately to new bookings.');
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 640 }}>
+      <PCard>
+        <PSectionHeader label="Minimum Angels per Service" sub="Customers must select at least this many Angels to proceed" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {pricing.services.map(svc => (
+            <div key={svc.id} style={{ padding: '16px', borderRadius: 12, border: `1px solid ${PC.border}`, background: 'rgba(255,255,255,0.02)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: 14 }}>
+                <div>
+                  <p style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 14, color: 'white', margin: '0 0 4px' }}>{svc.name}</p>
+                  <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: PC.textFaint, margin: 0, letterSpacing: '0.1em' }}>${svc.hourlyRate}/hr</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: PC.textFaint }}>Active</span>
+                  <button onClick={() => updateSvc(svc.id, 'active', !svc.active)} style={{ width: 40, height: 22, borderRadius: 11, border: 'none', background: svc.active !== false ? PC.success : '#374151', cursor: 'pointer', position: 'relative', transition: 'background .2s' }}>
+                    <div style={{ position: 'absolute', top: 3, left: svc.active !== false ? 21 : 3, width: 16, height: 16, borderRadius: 8, background: 'white', transition: 'left .2s' }} />
+                  </button>
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+                {[
+                  { label: 'Min Angels', field: 'minimumAngels', min: 1, max: 10, step: 1 },
+                  { label: 'Default Duration (hrs)', field: 'defaultDuration', min: 1, max: 12, step: 1 },
+                  { label: 'Min Duration (hrs)', field: 'minDuration', min: 1, max: 12, step: 1 },
+                ].map(({ label, field, min, max, step }) => (
+                  <div key={field}>
+                    <label style={{ display: 'block', fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: PC.textFaint, marginBottom: 6 }}>{label}</label>
+                    <input type="number" min={min} max={max} step={step} value={svc[field] || min}
+                      onChange={e => updateSvc(svc.id, field, e.target.value)}
+                      style={{ width: '100%', padding: '9px 12px', background: 'rgba(255,255,255,0.06)', border: `1px solid ${PC.border}`, borderRadius: 9, color: 'white', fontFamily: "'JetBrains Mono',monospace", fontSize: 15, fontWeight: 700, outline: 'none', textAlign: 'center', boxSizing: 'border-box' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </PCard>
+
+      <div style={{ display: 'flex', gap: 10 }}>
+        <PButton onClick={save} disabled={!dirty}>{dirty ? 'Save Booking Rules' : 'Saved ✓'}</PButton>
+      </div>
+
+      <PCard style={{ background: PC.warningBg, border: '1px solid rgba(251,191,36,0.12)' }}>
+        <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(251,191,36,0.6)', marginBottom: 6 }}>Live Sync</p>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, margin: 0 }}>
+          Booking rule changes apply <strong style={{ color: 'white' }}>immediately</strong> to the booking page. Minimum angel requirements are validated on both the booking form and before submission.
+        </p>
+      </PCard>
+    </div>
+  );
+}
+
+// ── Applications ──────────────────────────────────────────────────
+function AdminApplications({ flash }) {
+  const [apps, setApps] = useAS(() => window.PortalData.getApplications().reverse());
+  const [notes, setNotes] = useAS({});
+
+  const reload = () => setApps(window.PortalData.getApplications().reverse());
+
+  const setStatus = (id, status) => {
+    window.PortalData.updateApplicationStatus(id, status, notes[id]);
+    reload();
+    flash(`Application ${status === 'approved' ? 'approved' : status === 'declined' ? 'declined' : 'updated'}.`);
+  };
+
+  const STATUS_COLORS = { pending: PC.warning, reviewing: '#60a5fa', contacted: '#c084fc', approved: PC.success, declined: '#ef4444' };
+  const STATUS_LABELS = { pending: 'New', reviewing: 'Reviewing', contacted: 'Contacted', approved: 'Approved', declined: 'Declined' };
+
+  if (!apps.length) return (
+    <PCard style={{ textAlign: 'center', padding: '52px 24px' }}>
+      <p style={{ fontSize: 32, marginBottom: 12 }}>📩</p>
+      <p style={{ fontFamily: "'Syne',sans-serif", fontSize: 18, fontWeight: 700, color: 'white', margin: '0 0 8px' }}>No Applications Yet</p>
+      <p style={{ color: PC.textFaint, fontSize: 14, margin: 0 }}>Applications submitted via the hiring page will appear here.</p>
+    </PCard>
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <PCard style={{ padding: '12px 18px' }}>
+        <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: PC.textFaint, margin: 0 }}>
+          {apps.length} application{apps.length !== 1 ? 's' : ''} total · {apps.filter(a => a.status === 'pending').length} new
+        </p>
+      </PCard>
+
+      {apps.map(a => (
+        <PCard key={a.id}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
+            <div>
+              <p style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 17, color: 'white', margin: '0 0 4px' }}>{a.stageName || a.name || 'Unnamed'}</p>
+              <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: PC.textFaint, margin: 0, letterSpacing: '0.1em' }}>
+                {new Date(a.submittedAt).toLocaleDateString()} · {a.email || ''}
+              </p>
+            </div>
+            <PBadge label={STATUS_LABELS[a.status] || a.status} color={STATUS_COLORS[a.status] || PC.textFaint} />
+          </div>
+
+          {a.phone && <p style={{ fontSize: 13, color: PC.textMuted, margin: '0 0 10px' }}>Phone: {a.phone}</p>}
+          {a.message && <p style={{ fontSize: 13, color: PC.textMuted, lineHeight: 1.65, margin: '0 0 14px', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', borderRadius: 9, border: `1px solid ${PC.border}` }}>{a.message}</p>}
+
+          <div style={{ marginBottom: 12 }}>
+            <PInput label="Internal Notes" value={notes[a.id] || a.adminNotes || ''} onChange={e => setNotes(p => ({ ...p, [a.id]: e.target.value }))} placeholder="Notes visible only to admin..." />
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {['reviewing', 'contacted', 'approved', 'declined'].map(s => (
+              <button key={s} onClick={() => setStatus(a.id, s)} style={{ padding: '6px 14px', borderRadius: 8, border: `1px solid ${a.status === s ? STATUS_COLORS[s] : PC.border}`, background: a.status === s ? `${STATUS_COLORS[s]}18` : 'transparent', color: a.status === s ? STATUS_COLORS[s] : PC.textFaint, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', transition: 'all .15s', fontWeight: 600 }}>
+                {STATUS_LABELS[s]}
+              </button>
+            ))}
+          </div>
+        </PCard>
+      ))}
+    </div>
+  );
+}
+
+// ── Site Settings ─────────────────────────────────────────────────
+function AdminSettings({ flash }) {
+  const [settings, setSettings] = useAS(() => window.PortalData.getSettings());
+  const [dirty, setDirty] = useAS(false);
+  const [saving, setSaving] = useAS(false);
+
+  const update = (field, val) => {
+    setSettings(s => ({ ...s, [field]: val }));
+    setDirty(true);
+  };
+
+  const save = () => {
+    setSaving(true);
+    try {
+      window.PortalData.saveSettings(settings);
+      setDirty(false);
+      flash('Site settings saved successfully.');
+    } catch {
+      flash('Error saving settings. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const FIELDS = [
+    { key: 'businessEmail', label: 'Business Email', hint: 'Contact email shown to customers', type: 'email', placeholder: 'Angelgirlss222@gmail.com' },
+    { key: 'phone', label: 'Business Phone', hint: 'Phone number shown in navigation and booking', type: 'tel', placeholder: '702-703-5488' },
+    { key: 'galleryDepositText', label: 'Gallery Unlock Text', hint: 'Text shown below the gallery / in gallery modal footer', type: 'text', placeholder: '$200 reservation fee unlocks full verified gallery' },
+    { key: 'siteName', label: 'Site Name', hint: 'Used in page titles and meta tags', type: 'text', placeholder: 'Angel Girls Entertainment' },
+    { key: 'footerTagline', label: 'Footer Tagline', hint: 'Short tagline shown in footer and navigation', type: 'text', placeholder: 'Las Vegas · 24/7 Outcall · Verified & Discreet' },
+  ];
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 560 }}>
+      <PCard>
+        <PSectionHeader label="Site Settings" sub="Business information and content displayed to customers" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          {FIELDS.map(({ key, label, hint, type, placeholder }) => (
+            <div key={key}>
+              <label style={{ display: 'block', fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.18em', textTransform: 'uppercase', color: PC.textFaint, marginBottom: 6 }}>{label}</label>
+              <input
+                type={type} value={settings[key] || ''} placeholder={placeholder}
+                onChange={e => update(key, e.target.value)}
+                style={{ width: '100%', padding: '12px 14px', background: 'rgba(255,255,255,0.04)', border: `1px solid ${PC.border}`, borderRadius: 10, color: 'white', fontSize: 14, outline: 'none', fontFamily: "'Inter',sans-serif", boxSizing: 'border-box' }}
+              />
+              {hint && <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: PC.textFaint, margin: '5px 0 0', opacity: 0.6 }}>{hint}</p>}
+            </div>
+          ))}
+        </div>
+      </PCard>
+
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+        <PButton onClick={save} disabled={!dirty || saving}>
+          {saving ? 'Saving…' : dirty ? 'Save Settings' : 'Saved ✓'}
+        </PButton>
+        <PButton variant="ghost" onClick={() => { setSettings(window.PortalData.getDefaultSettings()); setDirty(true); }}>Reset to Defaults</PButton>
+      </div>
+
+      <PCard style={{ background: PC.warningBg, border: '1px solid rgba(251,191,36,0.12)' }}>
+        <p style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(251,191,36,0.6)', marginBottom: 6 }}>Note</p>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, margin: 0 }}>
+          Gallery text changes are reflected immediately on the public site. Phone and email changes require a page refresh to appear in the navigation.
+        </p>
+      </PCard>
     </div>
   );
 }

@@ -12,14 +12,24 @@ const SERVICE_META = {
 };
 function buildServiceOptions() {
   const p = getLivePricing();
-  if (p.services && p.services.length)
-    return p.services.map(s => ({ id: s.id, name: s.name, hourlyRate: s.hourlyRate, ...(SERVICE_META[s.id] || { description: '', badge: '' }) }));
-  return [
-    { id: 'nude',      name: 'Elite Private Performance',          hourlyRate: 800, ...SERVICE_META.nude },
-    { id: 'topless',   name: 'Signature Entertainment Experience', hourlyRate: 650, ...SERVICE_META.topless },
-    { id: 'pool',      name: 'VIP Event Entertainment',            hourlyRate: 550, ...SERVICE_META.pool },
-    { id: 'companion', name: 'Executive Social Experience',        hourlyRate: 550, ...SERVICE_META.companion }
+  const defaults = [
+    { id: 'nude',      name: 'Elite Private Performance',          hourlyRate: 800, minimumAngels: 2, defaultDuration: 2, ...SERVICE_META.nude },
+    { id: 'topless',   name: 'Signature Entertainment Experience', hourlyRate: 650, minimumAngels: 2, defaultDuration: 2, ...SERVICE_META.topless },
+    { id: 'pool',      name: 'VIP Event Entertainment',            hourlyRate: 550, minimumAngels: 2, defaultDuration: 2, ...SERVICE_META.pool },
+    { id: 'companion', name: 'Executive Social Experience',        hourlyRate: 550, minimumAngels: 1, defaultDuration: 2, ...SERVICE_META.companion }
   ];
+  if (p.services && p.services.length) {
+    return p.services
+      .filter(s => s.active !== false)
+      .map(s => ({
+        id: s.id, name: s.name, hourlyRate: s.hourlyRate,
+        minimumAngels: s.minimumAngels || 1,
+        defaultDuration: s.defaultDuration || 2,
+        description: s.description || (SERVICE_META[s.id] || {}).description || '',
+        badge: s.badge || (SERVICE_META[s.id] || {}).badge || ''
+      }));
+  }
+  return defaults;
 }
 
 function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
@@ -44,6 +54,7 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
   }, []);
 
   const svc      = serviceOptions.find(s => s.id === serviceId) || serviceOptions[0];
+  const minAngels = svc?.minimumAngels || 1;
   const n        = Math.max(1, selectedGirlIds.length);
   const isOff    = selectedZoneId.startsWith('off-strip');
   const surcharge= isOff ? (livePricing.offStripSurcharge || 50) : 0;
@@ -52,10 +63,13 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (!selectedGirlIds.length) { setErrorText('Please select at least 1 Angel above.'); return; }
-    if (!name.trim())            { setErrorText('Please enter your name.'); return; }
-    if (phone.length < 8)        { setErrorText('Please enter a valid phone number.'); return; }
-    if (!email.includes('@'))    { setErrorText('Please enter a valid email.'); return; }
+    if (selectedGirlIds.length < minAngels) {
+      setErrorText(`${svc.name} requires a minimum of ${minAngels} Angel${minAngels > 1 ? 's' : ''}. Please select ${minAngels > 1 ? `at least ${minAngels} Angels` : 'an Angel'} above.`);
+      return;
+    }
+    if (!name.trim())         { setErrorText('Please enter your name.'); return; }
+    if (phone.length < 8)     { setErrorText('Please enter a valid phone number.'); return; }
+    if (!email.includes('@')) { setErrorText('Please enter a valid email.'); return; }
     setErrorText('');
     onSubmitBooking({ selectedGirlIds, serviceId, hours, date, time, name, phone, email, location, roomNumber, instructions, totalPrice: total, depositAmount: deposit });
   };
@@ -86,9 +100,16 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
 
         {/* ── Step 2: Select Angels ──────────────────────── */}
         <div style={sect}>
-          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:16 }}>
-            <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>2</span>
-            <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Choose Your Angels</span>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8, marginBottom:16 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <span style={{ width:22, height:22, borderRadius:'50%', background:'#FF2E88', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:11, color:'white', flexShrink:0 }}>2</span>
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', color:'rgba(255,255,255,0.5)' }}>Choose Your Angels</span>
+            </div>
+            {minAngels > 1 && (
+              <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.15em', textTransform:'uppercase', color: selectedGirlIds.length >= minAngels ? '#22c55e' : '#FF2E88', background: selectedGirlIds.length >= minAngels ? 'rgba(34,197,94,0.1)' : 'rgba(255,46,136,0.1)', padding:'3px 10px', borderRadius:20, border:`1px solid ${selectedGirlIds.length >= minAngels ? 'rgba(34,197,94,0.3)' : 'rgba(255,46,136,0.3)'}` }}>
+                Min {minAngels} Angels · {selectedGirlIds.length}/{minAngels} selected
+              </span>
+            )}
           </div>
           <GirlsShowcase selectedGirlIds={selectedGirlIds} onToggleGirl={onToggleGirl} />
         </div>
@@ -112,7 +133,8 @@ function BookingPage({ selectedGirlIds, onToggleGirl, onSubmitBooking }) {
                       <span style={{ fontFamily:"'Syne',sans-serif", fontWeight:700, fontSize:'clamp(13px,3.5vw,15px)', color:'white' }}>{opt.name}</span>
                       <span style={{ fontFamily:"'JetBrains Mono',monospace", fontWeight:700, fontSize:13, color:'#FF2E88' }}>${opt.hourlyRate}/hr</span>
                     </div>
-                    <p style={{ fontSize:12, color:'rgba(255,255,255,0.5)', lineHeight:1.6, margin:0 }}>{opt.description}</p>
+                    <p style={{ fontSize:12, color:'rgba(255,255,255,0.5)', lineHeight:1.6, margin:'0 0 6px' }}>{opt.description}</p>
+                    {opt.minimumAngels > 1 && <span style={{ fontFamily:"'JetBrains Mono',monospace", fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(255,199,44,0.8)', background:'rgba(255,199,44,0.07)', padding:'2px 8px', borderRadius:20, border:'1px solid rgba(255,199,44,0.15)' }}>Min {opt.minimumAngels} Angels</span>}
                   </div>
                 </button>
               );

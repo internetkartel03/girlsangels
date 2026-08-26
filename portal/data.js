@@ -2,18 +2,48 @@
 (function () {
   'use strict';
 
-  const DB_KEY      = 'ag222_portal_db_v2';   // v2 = synced with site roster
-  const SESSION_KEY = 'ag222_portal_session_v1';
-  const PRICING_KEY = 'ag222_pricing_v1';
-  const APPS_KEY    = 'ag222_portal_apps_v1';
-  const ADMIN       = { username: 'AngelGirl', password: 'Welcome5!' };
+  const DB_KEY       = 'ag222_portal_db_v2';
+  const SESSION_KEY  = 'ag222_portal_session_v1';
+  const PRICING_KEY  = 'ag222_pricing_v1';
+  const APPS_KEY     = 'ag222_portal_apps_v1';
+  const SETTINGS_KEY = 'ag222_site_settings_v1';
+  const AUDIT_KEY    = 'ag222_audit_log_v1';
+  const ADMIN        = { username: 'AngelGirl', password: 'Welcome5!' };
+
+  const DEFAULT_SETTINGS = {
+    businessEmail:       'Angelgirlss222@gmail.com',
+    phone:               '702-703-5488',
+    galleryDepositText:  '$200 reservation fee unlocks full verified gallery',
+    siteName:            'Angel Girls Entertainment',
+    footerTagline:       'Las Vegas · 24/7 Outcall · Verified & Discreet',
+  };
 
   const DEFAULT_PRICING = {
     services: [
-      { id: 'nude',      name: 'Full Nude Private Dancing',    hourlyRate: 800 },
-      { id: 'topless',   name: 'Topless Private Dancing',      hourlyRate: 650 },
-      { id: 'pool',      name: 'Pool Party / VIP Club Events', hourlyRate: 550 },
-      { id: 'companion', name: 'Arm Candy / VIP Dinner Date',  hourlyRate: 550 }
+      {
+        id: 'nude', name: 'Elite Private Performance', hourlyRate: 800,
+        minimumAngels: 2, defaultDuration: 2, minDuration: 1, maxDuration: 12,
+        description: 'Immersive private entertainment in an intimate setting — performance-focused, direct engagement, elevated ambiance.',
+        badge: 'Elite Premium', active: true
+      },
+      {
+        id: 'topless', name: 'Signature Entertainment Experience', hourlyRate: 650,
+        minimumAngels: 2, defaultDuration: 2, minDuration: 1, maxDuration: 12,
+        description: 'Premium hosted entertainment experience with immersive interaction, curated atmosphere, and customizable performances for suites and VIP events.',
+        badge: 'Popular Choice', active: true
+      },
+      {
+        id: 'pool', name: 'VIP Event Entertainment', hourlyRate: 550,
+        minimumAngels: 2, defaultDuration: 2, minDuration: 1, maxDuration: 12,
+        description: 'Energetic entertainers and social hosts for luxury pool parties, private cabanas, and upscale events.',
+        badge: 'Bachelor Event', active: true
+      },
+      {
+        id: 'companion', name: 'Executive Social Experience', hourlyRate: 550,
+        minimumAngels: 1, defaultDuration: 2, minDuration: 1, maxDuration: 12,
+        description: 'Sophisticated companionship for upscale dinners, nightlife experiences, casino outings, and exclusive social events.',
+        badge: 'Ultimate Discretion', active: true
+      }
     ],
     depositPerAngel: 200,
     offStripSurcharge: 50
@@ -138,6 +168,9 @@
       }));
     },
     setStatus(girlId, status) {
+      // Supported: 'active', 'hidden', 'draft', 'archived'
+      const validStatuses = ['active', 'hidden', 'draft', 'archived'];
+      if (!validStatuses.includes(status)) return false;
       return this.updateGirl(girlId, g => ({ ...g, approved: { ...g.approved, publicStatus: status } }));
     },
     addGirl({ stageName, username, password }) {
@@ -194,6 +227,38 @@
       if (girl.resetCode.code !== code)         return { ok: false, error: 'Incorrect reset code. Please check with your manager.' };
       this.updateGirl(girl.id, g => ({ ...g, password: newPw, resetCode: null }));
       return { ok: true };
+    },
+
+    // ── Site Settings ─────────────────────────────────────────────
+    getSettings() {
+      try {
+        const stored = localStorage.getItem(SETTINGS_KEY);
+        return stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : { ...DEFAULT_SETTINGS };
+      } catch { return { ...DEFAULT_SETTINGS }; }
+    },
+    saveSettings(settings) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    },
+    getDefaultSettings() { return { ...DEFAULT_SETTINGS }; },
+
+    // ── Audit log ─────────────────────────────────────────────────
+    addAuditEntry(entry) {
+      try {
+        const log = JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
+        log.unshift({ ...entry, at: new Date().toISOString() });
+        // Keep last 500 entries only
+        localStorage.setItem(AUDIT_KEY, JSON.stringify(log.slice(0, 500)));
+      } catch {}
+    },
+    getAuditLog() {
+      try { return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); } catch { return []; }
+    },
+
+    // ── Application management ────────────────────────────────────
+    updateApplicationStatus(appId, status, notes) {
+      const apps = this.getApplications();
+      const updated = apps.map(a => a.id === appId ? { ...a, status, adminNotes: notes || a.adminNotes, reviewedAt: new Date().toISOString() } : a);
+      localStorage.setItem(APPS_KEY, JSON.stringify(updated));
     },
 
     availabilityLabel,
