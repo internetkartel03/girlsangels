@@ -587,9 +587,13 @@ function AdminBookingRules({ flash }) {
   };
 
   const save = () => {
-    window.PortalData.savePricing(pricing);
-    setDirty(false);
-    flash('Booking rules saved — changes apply immediately to new bookings.');
+    try {
+      window.PortalData.savePricing(pricing);
+      setDirty(false);
+      flash('Booking rules saved — changes apply immediately to new bookings.');
+    } catch {
+      flash('Error saving booking rules. Please try again.');
+    }
   };
 
   return (
@@ -654,8 +658,16 @@ function AdminApplications({ flash }) {
 
   const setStatus = (id, status) => {
     window.PortalData.updateApplicationStatus(id, status, notes[id]);
+    setNotes(p => { const n = { ...p }; delete n[id]; return n; });
     reload();
     flash(`Application ${status === 'approved' ? 'approved' : status === 'declined' ? 'declined' : 'updated'}.`);
+  };
+
+  const saveNote = (id, currentStatus) => {
+    window.PortalData.updateApplicationStatus(id, currentStatus, notes[id]);
+    setNotes(p => { const n = { ...p }; delete n[id]; return n; });
+    reload();
+    flash('Note saved.');
   };
 
   const STATUS_COLORS = { pending: PC.warning, reviewing: '#60a5fa', contacted: '#c084fc', approved: PC.success, declined: '#ef4444' };
@@ -693,7 +705,12 @@ function AdminApplications({ flash }) {
           {a.message && <p style={{ fontSize: 13, color: PC.textMuted, lineHeight: 1.65, margin: '0 0 14px', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', borderRadius: 9, border: `1px solid ${PC.border}` }}>{a.message}</p>}
 
           <div style={{ marginBottom: 12 }}>
-            <PInput label="Internal Notes" value={notes[a.id] || a.adminNotes || ''} onChange={e => setNotes(p => ({ ...p, [a.id]: e.target.value }))} placeholder="Notes visible only to admin..." />
+            <PInput label="Internal Notes" value={notes[a.id] !== undefined ? notes[a.id] : (a.adminNotes || '')} onChange={e => setNotes(p => ({ ...p, [a.id]: e.target.value }))} placeholder="Notes visible only to admin..." />
+            {notes[a.id] !== undefined && (
+              <div style={{ marginTop: 6 }}>
+                <PButton variant="ghost" onClick={() => saveNote(a.id, a.status)}>Save Note</PButton>
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

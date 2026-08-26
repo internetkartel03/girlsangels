@@ -35,6 +35,9 @@ function buildServiceOptions() {
 function getBookingCopy() {
   try {
     if (window.PortalData) return window.PortalData.getSettings();
+    // Public site: portal/data.js not loaded — read localStorage directly
+    const stored = localStorage.getItem('ag222_site_settings_v1');
+    return stored ? JSON.parse(stored) : {};
   } catch {}
   return {};
 }
